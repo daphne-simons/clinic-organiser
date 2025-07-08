@@ -14,7 +14,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 
 import EventInfo from "./EventInfo"
 import EventInfoModal from "./EventInfoModal"
-import { AddTodoModal } from "./AddTodoModal"
+import { AddCategoryModal } from "./AddCategoryModal"
 import AddDatePickerEventModal from "./AddDatePickerEventModal"
 import { generateId } from "../utils"
 
@@ -30,7 +30,7 @@ const localizer = dateFnsLocalizer({
   locales,
 })
 
-export interface ITodo {
+export interface ICategory {
   _id: string
   title: string
   color?: string
@@ -39,17 +39,17 @@ export interface ITodo {
 export interface IEventInfo extends Event {
   _id: string
   description: string
-  todoId?: string
+  categoryId?: string
 }
 
 export interface EventFormData {
   description: string
-  todoId?: string
+  categoryId?: string
 }
 
 export interface DatePickerEventFormData {
   description: string
-  todoId?: string
+  categoryId?: string
   allDay: boolean
   start?: Date
   end?: Date
@@ -61,21 +61,21 @@ export function EventCalendar() {
   const [date, setDate] = useState(new Date())
   const initialDatePickerEventFormData: DatePickerEventFormData = {
     description: "",
-    todoId: undefined,
+    categoryId: undefined,
     allDay: false,
     start: undefined,
     end: undefined,
   }
   // States
   const [openDatepickerModal, setOpenDatepickerModal] = useState(false)
-  const [openTodoModal, setOpenTodoModal] = useState(false)
+  const [openCategoryModal, setOpenCategoryModal] = useState(false)
   const [eventInfoModal, setEventInfoModal] = useState(false)
 
   const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
   const [datePickerEventFormData, setDatePickerEventFormData] =
     useState<DatePickerEventFormData>(initialDatePickerEventFormData)
   const [events, setEvents] = useState<IEventInfo[]>([])
-  const [todos, setTodos] = useState<ITodo[]>([])
+  const [categories, setCategories] = useState<ICategory[]>([])
 
   // Form Data
 
@@ -150,8 +150,8 @@ export function EventCalendar() {
                 <Button onClick={() => setOpenDatepickerModal(true)} size="small" variant="contained">
                   Add event
                 </Button>
-                <Button onClick={() => setOpenTodoModal(true)} size="small" variant="contained">
-                  Create todo
+                <Button onClick={() => setOpenCategoryModal(true)} size="small" variant="contained">
+                  Create category
                 </Button>
               </ButtonGroup>
             </Box>
@@ -163,7 +163,7 @@ export function EventCalendar() {
               datePickerEventFormData={datePickerEventFormData}
               setDatePickerEventFormData={setDatePickerEventFormData}
               onAddEvent={onAddEventFromDatePicker}
-              todos={todos}
+              categories={categories}
             />
             <EventInfoModal
               open={eventInfoModal}
@@ -171,11 +171,11 @@ export function EventCalendar() {
               onDeleteEvent={onDeleteEvent}
               currentEvent={currentEvent as IEventInfo}
             />
-            <AddTodoModal
-              open={openTodoModal}
-              handleClose={() => setOpenTodoModal(false)}
-              todos={todos}
-              setTodos={setTodos}
+            <AddCategoryModal
+              open={openCategoryModal}
+              handleClose={() => setOpenCategoryModal(false)}
+              categories={categories}
+              setCategories={setCategories}
             />
             <Calendar
               date={date}
@@ -190,11 +190,11 @@ export function EventCalendar() {
               endAccessor="end"
               defaultView="week"
               eventPropGetter={(event) => {
-                const hasTodo = todos.find((todo) => todo._id === event.todoId)
+                const hasCategory = categories.find((category) => category._id === event.categoryId)
                 return {
                   style: {
-                    backgroundColor: hasTodo ? hasTodo.color : "#b64fc8",
-                    borderColor: hasTodo ? hasTodo.color : "#b64fc8",
+                    backgroundColor: hasCategory ? hasCategory.color : "#b64fc8",
+                    borderColor: hasCategory ? hasCategory.color : "#b64fc8",
                   },
                 }
               }}

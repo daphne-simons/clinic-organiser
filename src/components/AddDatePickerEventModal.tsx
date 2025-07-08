@@ -14,7 +14,7 @@ import {
 } from "@mui/material"
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import type { DatePickerEventFormData, ITodo } from "./EventCalendar"
+import type { DatePickerEventFormData, ICategory } from "./EventCalendar"
 
 interface IProps {
   open: boolean
@@ -22,7 +22,7 @@ interface IProps {
   datePickerEventFormData: DatePickerEventFormData
   setDatePickerEventFormData: Dispatch<SetStateAction<DatePickerEventFormData>>
   onAddEvent: (e: MouseEvent<HTMLButtonElement>) => void
-  todos: ITodo[]
+  categories: ICategory[]
 }
 
 const AddDatePickerEventModal = ({
@@ -31,7 +31,7 @@ const AddDatePickerEventModal = ({
   datePickerEventFormData,
   setDatePickerEventFormData,
   onAddEvent,
-  todos,
+  categories,
 }: IProps) => {
   const { description, start, end, allDay } = datePickerEventFormData
 
@@ -53,10 +53,10 @@ const AddDatePickerEventModal = ({
     }))
   }
 
-  const handleTodoChange = (e: React.SyntheticEvent, value: ITodo | null) => {
+  const handleCategoryChange = (e: React.SyntheticEvent, value: ICategory | null) => {
     setDatePickerEventFormData((prevState) => ({
       ...prevState,
-      todoId: value?._id,
+      categoryId: value?._id,
     }))
   }
 
@@ -130,13 +130,13 @@ const AddDatePickerEventModal = ({
             />
           </LocalizationProvider>
           <Autocomplete
-            onChange={handleTodoChange}
+            onChange={handleCategoryChange}
             disablePortal
             id="combo-box-demo"
-            options={todos}
+            options={categories}
             sx={{ marginTop: 4 }}
             getOptionLabel={(option) => option.title}
-            renderInput={(params) => <TextField {...params} label="Todo" />}
+            renderInput={(params) => <TextField {...params} label="Category" />}
           />
         </Box>
       </DialogContent>
