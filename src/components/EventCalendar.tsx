@@ -13,7 +13,7 @@ import { enNZ } from "date-fns/locale/en-NZ"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
 import EventInfo from "./EventInfo"
-import AddEventModal from "./AddEventModal"
+// import AddEventModal from "./AddEventModal"
 import EventInfoModal from "./EventInfoModal"
 import { AddTodoModal } from "./AddTodoModal"
 import AddDatePickerEventModal from "./AddDatePickerEventModal"
@@ -61,22 +61,6 @@ export interface DatePickerEventFormData {
 
 export function EventCalendar() {
 
-  // State vars
-  const [openSlot, setOpenSlot] = useState(false)
-  const [openDatepickerModal, setOpenDatepickerModal] = useState(false)
-  const [openTodoModal, setOpenTodoModal] = useState(false)
-  const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
-
-  const [eventInfoModal, setEventInfoModal] = useState(false)
-
-  const [events, setEvents] = useState<IEventInfo[]>([])
-  const [todos, setTodos] = useState<ITodo[]>([])
-  // Form Data
-  const initialEventFormState: EventFormData = {
-    description: "",
-    todoId: undefined,
-  }
-
   const initialDatePickerEventFormData: DatePickerEventFormData = {
     description: "",
     todoId: undefined,
@@ -84,15 +68,30 @@ export function EventCalendar() {
     start: undefined,
     end: undefined,
   }
+  // State vars
+  // const [openSlot, setOpenSlot] = useState(false)
+  const [openDatepickerModal, setOpenDatepickerModal] = useState(false)
+  const [openTodoModal, setOpenTodoModal] = useState(false)
+  const [eventInfoModal, setEventInfoModal] = useState(false)
 
-  const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
-
+  const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
   const [datePickerEventFormData, setDatePickerEventFormData] =
     useState<DatePickerEventFormData>(initialDatePickerEventFormData)
+  // const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
+  const [events, setEvents] = useState<IEventInfo[]>([])
+  const [todos, setTodos] = useState<ITodo[]>([])
+  // Form Data
+  // const initialEventFormState: EventFormData = {
+  //   description: "",
+  //   todoId: undefined,
+  // }
+
+
+
 
 
   const handleSelectSlot = (event: Event) => {
-    setOpenSlot(true)
+    setOpenDatepickerModal(true)
     setCurrentEvent(event)
   }
 
@@ -101,31 +100,31 @@ export function EventCalendar() {
     setEventInfoModal(true)
   }
 
-  const handleClose = () => {
-    setEventFormData(initialEventFormState)
-    setOpenSlot(false)
-  }
+  // const handleClose = () => {
+  //   setEventFormData(initialEventFormState)
+  //   setOpenSlot(false)
+  // }
 
   const handleDatePickerClose = () => {
     setDatePickerEventFormData(initialDatePickerEventFormData)
     setOpenDatepickerModal(false)
   }
 
-  const onAddEvent = (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
+  // const onAddEvent = (e: MouseEvent<HTMLButtonElement>) => {
+  //   e.preventDefault()
 
-    const data: IEventInfo = {
-      ...eventFormData,
-      _id: generateId(),
-      start: currentEvent?.start,
-      end: currentEvent?.end,
-    }
+  //   const data: IEventInfo = {
+  //     ...eventFormData,
+  //     _id: generateId(),
+  //     start: currentEvent?.start,
+  //     end: currentEvent?.end,
+  //   }
 
-    const newEvents = [...events, data]
+  //   const newEvents = [...events, data]
 
-    setEvents(newEvents)
-    handleClose()
-  }
+  //   setEvents(newEvents)
+  //   handleClose()
+  // }
 
   const onAddEventFromDatePicker = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -134,6 +133,7 @@ export function EventCalendar() {
       return date ? date.setHours(date.getHours() + hours) : undefined
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const setMinToZero = (date: any) => {
       date.setSeconds(0)
 
@@ -185,14 +185,14 @@ export function EventCalendar() {
               </ButtonGroup>
             </Box>
             <Divider style={{ margin: 10 }} />
-            <AddEventModal
+            {/* <AddEventModal -- This is not something we need
               open={openSlot}
               handleClose={handleClose}
               eventFormData={eventFormData}
               setEventFormData={setEventFormData}
               onAddEvent={onAddEvent}
               todos={todos}
-            />
+            /> */}
             <AddDatePickerEventModal
               open={openDatepickerModal}
               handleClose={handleDatePickerClose}
