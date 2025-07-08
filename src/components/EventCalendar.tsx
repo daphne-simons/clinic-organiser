@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import type { MouseEvent } from "react"
 import { Box, Button, ButtonGroup, Card, CardContent, CardHeader, Container, Divider } from "@mui/material"
 
@@ -25,7 +25,7 @@ const locales = {
 const localizer = dateFnsLocalizer({
   format,
   parse,
-  startOfWeek,
+  startOfWeek: (date: any) => startOfWeek(date, { weekStartsOn: 1 }),
   getDay,
   locales,
 })
@@ -58,7 +58,7 @@ export interface DatePickerEventFormData {
 
 
 export function EventCalendar() {
-
+  const [date, setDate] = useState(new Date())
   const initialDatePickerEventFormData: DatePickerEventFormData = {
     description: "",
     todoId: undefined,
@@ -127,6 +127,9 @@ export function EventCalendar() {
     setEvents(() => [...events].filter((e) => e._id !== (currentEvent as IEventInfo)._id!))
     setEventInfoModal(false)
   }
+
+  const onNavigate = useCallback((newDate: Date) => { setDate(newDate) }, [])
+
   return (
     <Box
       mt={2}
@@ -175,6 +178,8 @@ export function EventCalendar() {
               setTodos={setTodos}
             />
             <Calendar
+              date={date}
+              onNavigate={onNavigate}
               localizer={localizer}
               events={events}
               onSelectEvent={handleSelectEvent}
@@ -196,6 +201,7 @@ export function EventCalendar() {
               style={{
                 height: 900,
               }}
+
             />
           </CardContent>
         </Card>
