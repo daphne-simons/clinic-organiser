@@ -68,8 +68,7 @@ export function EventCalendar() {
     start: undefined,
     end: undefined,
   }
-  // State vars
-  // const [openSlot, setOpenSlot] = useState(false)
+  // States
   const [openDatepickerModal, setOpenDatepickerModal] = useState(false)
   const [openTodoModal, setOpenTodoModal] = useState(false)
   const [eventInfoModal, setEventInfoModal] = useState(false)
@@ -77,18 +76,10 @@ export function EventCalendar() {
   const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
   const [datePickerEventFormData, setDatePickerEventFormData] =
     useState<DatePickerEventFormData>(initialDatePickerEventFormData)
-  // const [eventFormData, setEventFormData] = useState<EventFormData>(initialEventFormState)
   const [events, setEvents] = useState<IEventInfo[]>([])
   const [todos, setTodos] = useState<ITodo[]>([])
+
   // Form Data
-  // const initialEventFormState: EventFormData = {
-  //   description: "",
-  //   todoId: undefined,
-  // }
-
-
-
-
 
   const handleSelectSlot = (event: Event) => {
     setOpenDatepickerModal(true)
@@ -100,31 +91,10 @@ export function EventCalendar() {
     setEventInfoModal(true)
   }
 
-  // const handleClose = () => {
-  //   setEventFormData(initialEventFormState)
-  //   setOpenSlot(false)
-  // }
-
   const handleDatePickerClose = () => {
     setDatePickerEventFormData(initialDatePickerEventFormData)
     setOpenDatepickerModal(false)
   }
-
-  // const onAddEvent = (e: MouseEvent<HTMLButtonElement>) => {
-  //   e.preventDefault()
-
-  //   const data: IEventInfo = {
-  //     ...eventFormData,
-  //     _id: generateId(),
-  //     start: currentEvent?.start,
-  //     end: currentEvent?.end,
-  //   }
-
-  //   const newEvents = [...events, data]
-
-  //   setEvents(newEvents)
-  //   handleClose()
-  // }
 
   const onAddEventFromDatePicker = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
@@ -185,14 +155,7 @@ export function EventCalendar() {
               </ButtonGroup>
             </Box>
             <Divider style={{ margin: 10 }} />
-            {/* <AddEventModal -- This is not something we need
-              open={openSlot}
-              handleClose={handleClose}
-              eventFormData={eventFormData}
-              setEventFormData={setEventFormData}
-              onAddEvent={onAddEvent}
-              todos={todos}
-            /> */}
+
             <AddDatePickerEventModal
               open={openDatepickerModal}
               handleClose={handleDatePickerClose}
