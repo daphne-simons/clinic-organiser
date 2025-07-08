@@ -13,12 +13,10 @@ import { enNZ } from "date-fns/locale/en-NZ"
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
 import EventInfo from "./EventInfo"
-// import AddEventModal from "./AddEventModal"
 import EventInfoModal from "./EventInfoModal"
 import { AddTodoModal } from "./AddTodoModal"
 import AddDatePickerEventModal from "./AddDatePickerEventModal"
 import { generateId } from "../utils"
-
 
 const locales = {
   "en-NZ": enNZ,
