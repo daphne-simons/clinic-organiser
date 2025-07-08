@@ -142,7 +142,7 @@ export function EventCalendar() {
     >
       <Container maxWidth={false}>
         <Card>
-          <CardHeader title="Calendar" subheader="Create Events and Todos and manage them easily" />
+          <CardHeader title="Appointments" subheader="" />
           <Divider />
           <CardContent>
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
