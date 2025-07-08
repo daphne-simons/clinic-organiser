@@ -14,47 +14,47 @@ import {
 } from "@mui/material"
 import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
-import type { DatePickerEventFormData, ICategory } from "./EventCalendar"
+import type { DatePickerAppointmentFormData, ICategory } from "./AppointmentCalendar"
 
 interface IProps {
   open: boolean
   handleClose: Dispatch<SetStateAction<void>>
-  datePickerEventFormData: DatePickerEventFormData
-  setDatePickerEventFormData: Dispatch<SetStateAction<DatePickerEventFormData>>
-  onAddEvent: (e: MouseEvent<HTMLButtonElement>) => void
+  datePickerAppointmentFormData: DatePickerAppointmentFormData
+  setDatePickerAppointmentFormData: Dispatch<SetStateAction<DatePickerAppointmentFormData>>
+  onAddAppointment: (e: MouseEvent<HTMLButtonElement>) => void
   categories: ICategory[]
 }
 
-const AddDatePickerEventModal = ({
+const AddDatePickerAppointmentModal = ({
   open,
   handleClose,
-  datePickerEventFormData,
-  setDatePickerEventFormData,
-  onAddEvent,
+  datePickerAppointmentFormData,
+  setDatePickerAppointmentFormData,
+  onAddAppointment,
   categories,
 }: IProps) => {
-  const { description, start, end, allDay } = datePickerEventFormData
+  const { description, start, end, allDay } = datePickerAppointmentFormData
 
   const onClose = () => {
     handleClose()
   }
 
-  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setDatePickerEventFormData((prevState) => ({
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDatePickerAppointmentFormData((prevState) => ({
       ...prevState,
-      [event.target.name]: event.target.value,
+      [e.target.name]: e.target.value,
     }))
   }
 
-  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setDatePickerEventFormData((prevState) => ({
+  const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDatePickerAppointmentFormData((prevState) => ({
       ...prevState,
-      allDay: event.target.checked,
+      allDay: e.target.checked,
     }))
   }
 
   const handleCategoryChange = (e: React.SyntheticEvent, value: ICategory | null) => {
-    setDatePickerEventFormData((prevState) => ({
+    setDatePickerAppointmentFormData((prevState) => ({
       ...prevState,
       categoryId: value?._id,
     }))
@@ -74,9 +74,9 @@ const AddDatePickerEventModal = ({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add event</DialogTitle>
+      <DialogTitle>Add appointment</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a event, please fill in the information below.</DialogContentText>
+        <DialogContentText>To add a appointment, please fill in the information below.</DialogContentText>
         <Box component="form">
           <TextField
             name="description"
@@ -97,7 +97,7 @@ const AddDatePickerEventModal = ({
                 ampm={true}
                 minutesStep={30}
                 onChange={(newValue) =>
-                  setDatePickerEventFormData((prevState) => ({
+                  setDatePickerAppointmentFormData((prevState) => ({
                     ...prevState,
                     start: new Date(newValue!),
                   }))
@@ -121,7 +121,7 @@ const AddDatePickerEventModal = ({
               ampm={true}
               value={allDay ? null : end}
               onChange={(newValue) =>
-                setDatePickerEventFormData((prevState) => ({
+                setDatePickerAppointmentFormData((prevState) => ({
                   ...prevState,
                   end: new Date(newValue!),
                 }))
@@ -144,7 +144,7 @@ const AddDatePickerEventModal = ({
         <Button color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled={isDisabled()} color="success" onClick={onAddEvent}>
+        <Button disabled={isDisabled()} color="success" onClick={onAddAppointment}>
           Add
         </Button>
       </DialogActions>
@@ -152,4 +152,4 @@ const AddDatePickerEventModal = ({
   )
 }
 
-export default AddDatePickerEventModal
+export default AddDatePickerAppointmentModal

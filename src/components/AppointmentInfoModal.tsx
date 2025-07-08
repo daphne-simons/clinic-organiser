@@ -1,15 +1,15 @@
 import type { SetStateAction, MouseEvent, Dispatch } from "react"
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, Typography } from "@mui/material"
-import type { IEventInfo } from "./EventCalendar"
+import type { IAppointmentInfo } from "./AppointmentCalendar"
 
 interface IProps {
   open: boolean
   handleClose: Dispatch<SetStateAction<void>>
-  onDeleteEvent: (e: MouseEvent<HTMLButtonElement>) => void
-  currentEvent: IEventInfo | null
+  onDeleteAppointment: (e: MouseEvent<HTMLButtonElement>) => void
+  currentAppointment: IAppointmentInfo | null
 }
 
-const EventInfoModal = ({ open, handleClose, onDeleteEvent, currentEvent }: IProps) => {
+const AppointmentInfoModal = ({ open, handleClose, onDeleteAppointment, currentAppointment }: IProps) => {
 
   // TODO: Add an update functionality in this 
   const onClose = () => {
@@ -18,11 +18,11 @@ const EventInfoModal = ({ open, handleClose, onDeleteEvent, currentEvent }: IPro
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Event Info</DialogTitle>
+      <DialogTitle>Appointment Info</DialogTitle>
       <DialogContent>
         <DialogContentText>
           <Typography sx={{ fontSize: 14, marginTop: 3 }} color="text.secondary" gutterBottom>
-            {currentEvent?.description}
+            {currentAppointment?.description}
           </Typography>
         </DialogContentText>
         <Box component="form"></Box>
@@ -31,12 +31,12 @@ const EventInfoModal = ({ open, handleClose, onDeleteEvent, currentEvent }: IPro
         <Button color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button color="info" onClick={onDeleteEvent}>
-          Delete Event
+        <Button color="info" onClick={onDeleteAppointment}>
+          Delete Appointment
         </Button>
       </DialogActions>
     </Dialog>
   )
 }
 
-export default EventInfoModal
+export default AppointmentInfoModal

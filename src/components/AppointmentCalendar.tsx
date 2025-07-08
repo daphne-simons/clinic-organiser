@@ -2,7 +2,9 @@ import { useCallback, useState } from "react"
 import type { MouseEvent } from "react"
 import { Box, Button, ButtonGroup, Card, CardContent, CardHeader, Container, Divider } from "@mui/material"
 
-import { Calendar, type Event, dateFnsLocalizer } from "react-big-calendar"
+import { Calendar, dateFnsLocalizer } from "react-big-calendar"
+
+import type { Event } from "react-big-calendar"
 
 import { format } from "date-fns/format"
 import { parse } from "date-fns/parse"
@@ -12,10 +14,10 @@ import { enNZ } from "date-fns/locale/en-NZ"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
-import EventInfo from "./EventInfo"
-import EventInfoModal from "./EventInfoModal"
+import AppointmentInfo from "./AppointmentInfo"
+import AppointmentInfoModal from './AppointmentInfoModal'
 import { AddCategoryModal } from "./AddCategoryModal"
-import AddDatePickerEventModal from "./AddDatePickerEventModal"
+import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal"
 import { generateId } from "../utils"
 
 const locales = {
@@ -36,18 +38,18 @@ export interface ICategory {
   color?: string
 }
 
-export interface IEventInfo extends Event {
+export interface IAppointmentInfo extends Event {
   _id: string
   description: string
   categoryId?: string
 }
 
-export interface EventFormData {
+export interface AppointmentFormData {
   description: string
   categoryId?: string
 }
 
-export interface DatePickerEventFormData {
+export interface DatePickerAppointmentFormData {
   description: string
   categoryId?: string
   allDay: boolean
@@ -57,9 +59,9 @@ export interface DatePickerEventFormData {
 
 
 
-export function EventCalendar() {
+export function AppointmentCalendar() {
   const [date, setDate] = useState(new Date())
-  const initialDatePickerEventFormData: DatePickerEventFormData = {
+  const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
     description: "",
     categoryId: undefined,
     allDay: false,
@@ -69,32 +71,32 @@ export function EventCalendar() {
   // States
   const [openDatepickerModal, setOpenDatepickerModal] = useState(false)
   const [openCategoryModal, setOpenCategoryModal] = useState(false)
-  const [eventInfoModal, setEventInfoModal] = useState(false)
+  const [appointmentInfoModal, setAppointmentInfoModal] = useState(false)
 
-  const [currentEvent, setCurrentEvent] = useState<Event | IEventInfo | null>(null)
-  const [datePickerEventFormData, setDatePickerEventFormData] =
-    useState<DatePickerEventFormData>(initialDatePickerEventFormData)
-  const [events, setEvents] = useState<IEventInfo[]>([])
+  const [currentAppointment, setCurrentAppointment] = useState<IAppointment | IAppointmentInfo | null>(null)
+  const [datePickerAppointmentFormData, setDatePickerAppointmentFormData] =
+    useState<DatePickerAppointmentFormData>(initialDatePickerAppointmentFormData)
+  const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
   const [categories, setCategories] = useState<ICategory[]>([])
 
   // Form Data
 
-  const handleSelectSlot = (event: Event) => {
+  const handleSelectSlot = (appointment: IAppointment) => {
     setOpenDatepickerModal(true)
-    setCurrentEvent(event)
+    setCurrentAppointment(appointment)
   }
 
-  const handleSelectEvent = (event: IEventInfo) => {
-    setCurrentEvent(event)
-    setEventInfoModal(true)
+  const handleSelectAppointment = (appointment: IAppointmentInfo) => {
+    setCurrentAppointment(appointment)
+    setAppointmentInfoModal(true)
   }
 
   const handleDatePickerClose = () => {
-    setDatePickerEventFormData(initialDatePickerEventFormData)
+    setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData)
     setOpenDatepickerModal(false)
   }
 
-  const onAddEventFromDatePicker = (e: MouseEvent<HTMLButtonElement>) => {
+  const onAddAppointmentFromDatePicker = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
 
     const addHours = (date: Date | undefined, hours: number) => {
@@ -108,24 +110,24 @@ export function EventCalendar() {
       return date
     }
 
-    const data: IEventInfo = {
-      ...datePickerEventFormData,
+    const data: IAppointmentInfo = {
+      ...datePickerAppointmentFormData,
       _id: generateId(),
-      start: setMinToZero(datePickerEventFormData.start),
-      end: datePickerEventFormData.allDay
-        ? addHours(datePickerEventFormData.start, 12)
-        : setMinToZero(datePickerEventFormData.end),
+      start: setMinToZero(datePickerAppointmentFormData.start),
+      end: datePickerAppointmentFormData.allDay
+        ? addHours(datePickerAppointmentFormData.start, 12)
+        : setMinToZero(datePickerAppointmentFormData.end),
     }
 
-    const newEvents = [...events, data]
+    const newAppointments = [...appointments, data]
 
-    setEvents(newEvents)
-    setDatePickerEventFormData(initialDatePickerEventFormData)
+    setAppointments(newAppointments)
+    setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData)
   }
 
-  const onDeleteEvent = () => {
-    setEvents(() => [...events].filter((e) => e._id !== (currentEvent as IEventInfo)._id!))
-    setEventInfoModal(false)
+  const onDeleteAppointment = () => {
+    setAppointments(() => [...appointments].filter((e) => e._id !== (currentAppointment as IAppointmentInfo)._id!))
+    setAppointmentInfoModal(false)
   }
 
   const onNavigate = useCallback((newDate: Date) => { setDate(newDate) }, [])
@@ -148,7 +150,7 @@ export function EventCalendar() {
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <ButtonGroup size="large" variant="contained" aria-label="outlined primary button group">
                 <Button onClick={() => setOpenDatepickerModal(true)} size="small" variant="contained">
-                  Add event
+                  Add appointment
                 </Button>
                 <Button onClick={() => setOpenCategoryModal(true)} size="small" variant="contained">
                   Create category
@@ -157,19 +159,19 @@ export function EventCalendar() {
             </Box>
             <Divider style={{ margin: 10 }} />
 
-            <AddDatePickerEventModal
+            <AddDatePickerAppointmentModal
               open={openDatepickerModal}
               handleClose={handleDatePickerClose}
-              datePickerEventFormData={datePickerEventFormData}
-              setDatePickerEventFormData={setDatePickerEventFormData}
-              onAddEvent={onAddEventFromDatePicker}
+              datePickerAppointmentFormData={datePickerAppointmentFormData}
+              setDatePickerAppointmentFormData={setDatePickerAppointmentFormData}
+              onAddAppointment={onAddAppointmentFromDatePicker}
               categories={categories}
             />
-            <EventInfoModal
-              open={eventInfoModal}
-              handleClose={() => setEventInfoModal(false)}
-              onDeleteEvent={onDeleteEvent}
-              currentEvent={currentEvent as IEventInfo}
+            <AppointmentInfoModal
+              open={appointmentInfoModal}
+              handleClose={() => setAppointmentInfoModal(false)}
+              onDeleteAppointment={onDeleteAppointment}
+              currentAppointment={currentAppointment as IAppointmentInfo}
             />
             <AddCategoryModal
               open={openCategoryModal}
@@ -181,16 +183,16 @@ export function EventCalendar() {
               date={date}
               onNavigate={onNavigate}
               localizer={localizer}
-              events={events}
-              onSelectEvent={handleSelectEvent}
+              events={appointments}
+              onSelectEvent={handleSelectAppointment}
               onSelectSlot={handleSelectSlot}
               selectable
               startAccessor="start"
-              components={{ event: EventInfo }}
+              components={{ event: AppointmentInfo }}
               endAccessor="end"
               defaultView="week"
-              eventPropGetter={(event) => {
-                const hasCategory = categories.find((category) => category._id === event.categoryId)
+              eventPropGetter={(appointment) => {
+                const hasCategory = categories.find((category) => category._id === appointment.categoryId)
                 return {
                   style: {
                     backgroundColor: hasCategory ? hasCategory.color : "#b64fc8",

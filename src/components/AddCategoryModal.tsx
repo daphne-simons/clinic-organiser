@@ -18,7 +18,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete"
 
 import { HexColorPicker } from "react-colorful"
-import { type ICategory } from "./EventCalendar"
+import { type ICategory } from "./AppointmentCalendar"
 import { generateId } from "../utils"
 
 interface IProps {
