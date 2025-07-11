@@ -1,4 +1,4 @@
-import type { Dispatch, MouseEvent, SetStateAction, ChangeEvent } from "react"
+import type { Dispatch, MouseEvent, SetStateAction, ChangeEvent } from "react";
 import {
   TextField,
   Dialog,
@@ -10,28 +10,31 @@ import {
   Autocomplete,
   Box,
   Typography,
-} from "@mui/material"
+} from "@mui/material";
 // import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers"
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import {
   LocalizationProvider,
   DatePicker,
   MultiSectionDigitalClock,
-} from "@mui/x-date-pickers"
-import dayjs from 'dayjs'
-import type { DatePickerAppointmentFormData, ICategory } from "./AppointmentCalendar"
-import { getAllClientNames } from "../apis/clients"
-import { useQuery } from "@tanstack/react-query"
+} from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import type { DatePickerAppointmentFormData, ICategory } from "../models";
+import { getAllClientNames } from "../apis/clients";
+import { useQuery } from "@tanstack/react-query";
 
 interface IProps {
-  open: boolean
-  handleClose: Dispatch<SetStateAction<void>>
-  datePickerAppointmentFormData: DatePickerAppointmentFormData
-  setDatePickerAppointmentFormData: Dispatch<SetStateAction<DatePickerAppointmentFormData>>
-  onAddAppointment: (e: MouseEvent<HTMLButtonElement>) => void
-  categories: ICategory[]
+  open: boolean;
+  handleClose: Dispatch<SetStateAction<void>>;
+  datePickerAppointmentFormData: DatePickerAppointmentFormData;
+  setDatePickerAppointmentFormData: Dispatch<
+    SetStateAction<DatePickerAppointmentFormData>
+  >;
+  onAddAppointment: (e: MouseEvent<HTMLButtonElement>) => void;
+  categories: ICategory[];
 }
 
+/////////////////////////////////////////////////////////////////////////////
 export default function AddDatePickerAppointmentModal({
   open,
   handleClose,
@@ -40,70 +43,78 @@ export default function AddDatePickerAppointmentModal({
   onAddAppointment,
   categories,
 }: IProps) {
-  const { client, start, end, allDay, notes } = datePickerAppointmentFormData
+  const { client, start, end, allDay, notes } = datePickerAppointmentFormData;
 
-  const {data: clients, loading, error} = useQuery({
-    queryKey: ['clientNamesForDropdown'],
-    queryFn: () => getAllClientNames()
-  })
-  const onClose = () => {
-    handleClose()
+  const { data: clients } = useQuery({
+    queryKey: ["clientNamesForDropdown"],
+    queryFn: () => getAllClientNames(),
+  });
+  function onClose() {
+    handleClose();
   }
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  function onChange(e: ChangeEvent<HTMLInputElement>) {
     setDatePickerAppointmentFormData((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value,
-    }))
+    }));
   }
 
-
-  const handleCategoryChange = (e: React.SyntheticEvent, value: ICategory | null) => {
+  function handleCategoryChange(
+    _e: React.SyntheticEvent,
+    value: ICategory | null
+  ) {
     setDatePickerAppointmentFormData((prevState) => ({
       ...prevState,
       categoryId: value?._id,
-    }))
+    }));
   }
 
   // Handle Date change
-  const handleDateChange = (newValue: Date | null) => {
+  function handleDateChange(newValue: Date | null) {
     setDatePickerAppointmentFormData((prevState) => ({
       ...prevState,
       // Update both start and end dates to maintain the same date
       start: newValue ? new Date(newValue) : undefined,
-      end: newValue && prevState.end ?
-        new Date(newValue.getFullYear(), newValue.getMonth(), newValue.getDate(),
-          prevState.end.getHours(), prevState.end.getMinutes()) :
-        undefined,
-    }))
+      end:
+        newValue && prevState.end
+          ? new Date(
+              newValue.getFullYear(),
+              newValue.getMonth(),
+              newValue.getDate(),
+              prevState.end.getHours(),
+              prevState.end.getMinutes()
+            )
+          : undefined,
+    }));
   }
   // Handle start time change
-  const handleStartTimeChange = (newValue: Date | null) => {
+  function handleStartTimeChange(newValue: Date | null) {
     if (newValue && start) {
       // Combine the existing date with the new time
-      const updatedStart = new Date(start)
-      updatedStart.setHours(newValue.getHours())
-      updatedStart.setMinutes(newValue.getMinutes())
+      const updatedStart = new Date(start);
+      updatedStart.setHours(newValue.getHours());
+      updatedStart.setMinutes(newValue.getMinutes());
 
       setDatePickerAppointmentFormData((prevState) => ({
         ...prevState,
         start: updatedStart,
-      }))
+      }));
     }
   }
 
   // Handle end time change
-  const handleEndTimeChange = (newValue: Date | null) => {
+  function handleEndTimeChange(newValue: Date | null) {
     if (newValue && start) {
       // Combine the existing date with the new time
-      const updatedEnd = new Date(start) // Use start date as base
-      updatedEnd.setHours(newValue.getHours())
-      updatedEnd.setMinutes(newValue.getMinutes())
+      const updatedEnd = new Date(start); // Use start date as base
+      updatedEnd.setHours(newValue.getHours());
+      updatedEnd.setMinutes(newValue.getMinutes());
 
       setDatePickerAppointmentFormData((prevState) => ({
         ...prevState,
         end: updatedEnd,
-      }))
+      }));
     }
   }
 
@@ -117,41 +128,43 @@ export default function AddDatePickerAppointmentModal({
   //     }))
   //   }
   // }
-  const isDisabled = () => {
+  function isDisabled() {
     const checkend = () => {
       if (!allDay && end === null) {
-        return true
+        return true;
       }
-    }
+    };
     if (client === "" || start === null || checkend()) {
-      return true
+      return true;
     }
-    return false
+    return false;
   }
 
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle variant="h5">Add appointment</DialogTitle>
       <DialogContent>
-        <DialogContentText>To add a appointment, please fill in the information below.</DialogContentText>
+        <DialogContentText>
+          To add a appointment, please fill in the information below.
+        </DialogContentText>
         <Box component="form">
-
           {/* Client Name: */}
           <Typography variant="h6" color="primary" sx={{ mt: 2 }}>
             Client
           </Typography>
           <Autocomplete
             disablePortal
-            options={clients}
+            options={clients || []}
             sx={{ width: 300, mb: 2, mt: 1 }}
             onChange={(_, newValue) =>
               setDatePickerAppointmentFormData((prevState) => ({
                 ...prevState,
-                client: newValue?.label ?? '', // Default value if newValue is null              
+                client: newValue?.label ?? "", // Default value if newValue is null
               }))
             }
-            renderInput={(params) => <TextField {...params} label="Enter client name" />}
-
+            renderInput={(params) => (
+              <TextField {...params} label="Enter client name" />
+            )}
           />
 
           {/* Date: */}
@@ -164,7 +177,10 @@ export default function AddDatePickerAppointmentModal({
                 label="Select date"
                 value={start}
                 onChange={handleDateChange}
-                renderInput={(params) => <TextField {...params} halfWidth />}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                renderInput={(params: any) => (
+                  <TextField {...params} halfWidth />
+                )}
               />
             </Box>
 
@@ -174,8 +190,14 @@ export default function AddDatePickerAppointmentModal({
               </Typography>
             </Box>
 
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
-
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                flexWrap: "wrap",
+              }}
+            >
               {/* // STRETCH: handle both start and end time in a single input and handler function */}
               {/* <TimeRangePicker
                 value={value}
@@ -183,37 +205,40 @@ export default function AddDatePickerAppointmentModal({
               /> */}
               {/* Start Time */}
               <Box>
-                <Typography variant="body1" sx={{ mb: 1 }}>Start Time</Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  Start Time
+                </Typography>
                 <MultiSectionDigitalClock
                   value={start}
                   onChange={handleStartTimeChange}
                   sx={{
-                    border: '1px solid #e0e0e0',
+                    border: "1px solid #e0e0e0",
                     borderRadius: 1,
                     maxHeight: 50,
-                    overflow: 'auto'
+                    overflow: "auto",
                   }}
                 />
-
               </Box>
 
               {/* "to" separator */}
-              <Typography variant="h6" sx={{ mt: 3 }} >
+              <Typography variant="h6" sx={{ mt: 3 }}>
                 to
               </Typography>
 
               {/* End Time */}
               <Box>
-                <Typography variant="body1" sx={{ mb: 1 }}>End Time</Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  End Time
+                </Typography>
                 <MultiSectionDigitalClock
                   value={end}
                   onChange={handleEndTimeChange}
                   minTime={start ? dayjs(start).toDate() : undefined}
                   sx={{
-                    border: '1px solid #e0e0e0',
+                    border: "1px solid #e0e0e0",
                     borderRadius: 1,
                     maxHeight: 50,
-                    overflow: 'auto'
+                    overflow: "auto",
                   }}
                 />
               </Box>
@@ -232,7 +257,9 @@ export default function AddDatePickerAppointmentModal({
               options={categories}
               sx={{ mt: 1 }}
               getOptionLabel={(option) => option.title}
-              renderInput={(params) => <TextField {...params} label="Select a category" />}
+              renderInput={(params) => (
+                <TextField {...params} label="Select a category" />
+              )}
             />
           </Box>
           {/* Notes:  */}
@@ -253,16 +280,19 @@ export default function AddDatePickerAppointmentModal({
             />
           </Box>
         </Box>
-      </DialogContent >
+      </DialogContent>
       <DialogActions>
         <Button color="error" onClick={onClose}>
           Cancel
         </Button>
-        <Button disabled={isDisabled()} color="success" onClick={onAddAppointment}>
+        <Button
+          disabled={isDisabled()}
+          color="success"
+          onClick={onAddAppointment}
+        >
           Add
         </Button>
       </DialogActions>
-    </Dialog >
-  )
+    </Dialog>
+  );
 }
-

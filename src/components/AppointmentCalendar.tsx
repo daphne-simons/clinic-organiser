@@ -28,7 +28,7 @@ import { AddCategoryModal } from "./AddCategoryModal";
 import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal";
 import { generateId } from "../utils";
 import { localizer } from "../localizer";
-
+console.log(localizer);
 export function AppointmentCalendar() {
   const [date, setDate] = useState(new Date());
   const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
@@ -113,7 +113,7 @@ export function AppointmentCalendar() {
 
     setAppointments(newAppointments);
     setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData);
-  };
+  }
 
   function onDeleteAppointment() {
     setAppointments(() =>
@@ -122,7 +122,7 @@ export function AppointmentCalendar() {
       )
     );
     setAppointmentInfoModal(false);
-  };
+  }
 
   const onNavigate = useCallback((newDate: Date) => {
     setDate(newDate);
