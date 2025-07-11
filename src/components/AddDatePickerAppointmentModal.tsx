@@ -20,6 +20,8 @@ import {
 } from "@mui/x-date-pickers"
 import dayjs from 'dayjs'
 import type { DatePickerAppointmentFormData, ICategory } from "./AppointmentCalendar"
+import { getAllClientNames } from "../apis/clients"
+import { useQuery } from "@tanstack/react-query"
 
 interface IProps {
   open: boolean
@@ -40,13 +42,10 @@ export default function AddDatePickerAppointmentModal({
 }: IProps) {
   const { client, start, end, allDay, notes } = datePickerAppointmentFormData
 
-  const clients = [ // TODO API
-    {
-      id: 1,
-      label: "Jared Pinfold",
-    },
-    { id: 2, label: "Daph Simons" },
-  ];
+  const {data: clients, loading, error} = useQuery({
+    queryKey: ['clientNamesForDropdown'],
+    queryFn: () => getAllClientNames()
+  })
   const onClose = () => {
     handleClose()
   }
