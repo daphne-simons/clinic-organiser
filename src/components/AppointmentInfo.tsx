@@ -1,16 +1,17 @@
 import { Typography } from "@mui/material"
 import type { IAppointmentInfo } from "./AppointmentCalendar"
+import type { EventProps } from 'react-big-calendar';
 
-interface IProps {
-  appointment: IAppointmentInfo
-}
+// interface IProps extends EventProps<IAppointmentInfo> {
+//   appointment: IAppointmentInfo
+// }
 
-const AppointmentInfo = ({ appointment }: IProps) => {
-  console.log(appointment);
+const AppointmentInfo = ({ event }: EventProps<IAppointmentInfo>) => {
+  console.log(event);
 
   return (
     <>
-      <Typography>{appointment.description}</Typography>
+      <Typography>{event.description}</Typography>
     </>
   )
 }

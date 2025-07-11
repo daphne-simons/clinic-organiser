@@ -57,8 +57,6 @@ export interface DatePickerAppointmentFormData {
   end?: Date
 }
 
-
-
 export function AppointmentCalendar() {
   const [date, setDate] = useState(new Date())
   const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
@@ -73,7 +71,7 @@ export function AppointmentCalendar() {
   const [openCategoryModal, setOpenCategoryModal] = useState(false)
   const [appointmentInfoModal, setAppointmentInfoModal] = useState(false)
 
-  const [currentAppointment, setCurrentAppointment] = useState<IAppointment | IAppointmentInfo | null>(null)
+  const [currentAppointment, setCurrentAppointment] = useState<Event | IAppointmentInfo | null>(null)
   const [datePickerAppointmentFormData, setDatePickerAppointmentFormData] =
     useState<DatePickerAppointmentFormData>(initialDatePickerAppointmentFormData)
   const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
@@ -81,7 +79,7 @@ export function AppointmentCalendar() {
 
   // Form Data
 
-  const handleSelectSlot = (appointment: IAppointment) => {
+  const handleSelectSlot = (appointment: Event) => {
     setOpenDatepickerModal(true)
     setCurrentAppointment(appointment)
   }
