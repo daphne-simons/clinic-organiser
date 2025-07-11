@@ -28,7 +28,7 @@ import { AddCategoryModal } from "./AddCategoryModal";
 import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal";
 import { generateId } from "../utils";
 import { localizer } from "../localizer";
-console.log(localizer);
+
 export function AppointmentCalendar() {
   const [date, setDate] = useState(new Date());
   const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
