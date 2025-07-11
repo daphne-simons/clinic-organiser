@@ -76,13 +76,25 @@ export function AppointmentCalendar() {
     start: undefined,
     end: undefined,
   };
-  const clients = [
-    {
-      id: "ab12",
-      name: "Jared Pinfold",
-    },
-    { id: "cd34", name: "Daph Simons" },
-  ];
+  // const clients = [ //TODO API
+  //   {
+  //     id: "ab12",
+  //     name: "Jared Pinfold",
+  //   },
+  //   { id: "cd34", name: "Daph Simons" },
+  // ];
+  const categoriesTemp = [ //TODO API
+{
+  _id: "1",
+  title: "ACC",
+  color: "blue"
+},
+{
+  _id: "2",
+  title: "Private",
+  color: "green"
+}
+  ]
   // States
   const [openDatepickerModal, setOpenDatepickerModal] = useState(false);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
@@ -96,7 +108,7 @@ export function AppointmentCalendar() {
       initialDatePickerAppointmentFormData
     );
   const [appointments, setAppointments] = useState<IAppointmentInfo[]>([]);
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [categories, setCategories] = useState<ICategory[]>(categoriesTemp);
 
   // Form Data
 
