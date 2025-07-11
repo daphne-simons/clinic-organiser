@@ -34,17 +34,23 @@ const AddDatePickerAppointmentModal = ({
   categories,
 }: IProps) => {
   const { description, start, end, allDay } = datePickerAppointmentFormData
-
+  const clients = [ //TODO API
+    {
+      id: 1,
+      label: "Jared Pinfold",
+    },
+    { id: 2, label: "Daph Simons" },
+  ];
   const onClose = () => {
     handleClose()
   }
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDatePickerAppointmentFormData((prevState) => ({
-      ...prevState,
-      [e.target.name]: e.target.value,
-    }))
-  }
+  // const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setDatePickerAppointmentFormData((prevState) => ({
+  //     ...prevState,
+  //     [e.target.name]: e.target.value,
+  //   }))
+  // }
 
   const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDatePickerAppointmentFormData((prevState) => ({
@@ -78,7 +84,7 @@ const AddDatePickerAppointmentModal = ({
       <DialogContent>
         <DialogContentText>To add a appointment, please fill in the information below.</DialogContentText>
         <Box component="form">
-          <TextField
+          {/* <TextField
             name="description"
             value={description}
             margin="dense"
@@ -88,7 +94,13 @@ const AddDatePickerAppointmentModal = ({
             fullWidth
             variant="outlined"
             onChange={onChange}
-          />
+          /> */}
+          <Autocomplete
+  disablePortal
+  options={clients}
+  sx={{ width: 300 }}
+  renderInput={(params) => <TextField {...params} label="Client" />}
+/>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <Box mb={2} mt={5}>
               <DateTimePicker

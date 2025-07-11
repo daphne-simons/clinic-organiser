@@ -76,13 +76,7 @@ export function AppointmentCalendar() {
     start: undefined,
     end: undefined,
   };
-  // const clients = [ //TODO API
-  //   {
-  //     id: "ab12",
-  //     name: "Jared Pinfold",
-  //   },
-  //   { id: "cd34", name: "Daph Simons" },
-  // ];
+
   const categoriesTemp = [ //TODO API
 {
   _id: "1",
