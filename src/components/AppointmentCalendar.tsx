@@ -189,6 +189,7 @@ export function AppointmentCalendar() {
               components={{ event: AppointmentInfo }}
               endAccessor="end"
               defaultView="week"
+              views={['week']}
               eventPropGetter={(appointment) => {
                 const hasCategory = categories.find((category) => category._id === appointment.categoryId)
                 return {
