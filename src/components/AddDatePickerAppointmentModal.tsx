@@ -25,16 +25,17 @@ interface IProps {
   categories: ICategory[]
 }
 
-const AddDatePickerAppointmentModal = ({
+export default function AddDatePickerAppointmentModal({
   open,
   handleClose,
   datePickerAppointmentFormData,
   setDatePickerAppointmentFormData,
   onAddAppointment,
   categories,
-}: IProps) => {
-  const { description, start, end, allDay } = datePickerAppointmentFormData
-  const clients = [ //TODO API
+}: IProps) {
+  const { client, start, end, allDay, notes } = datePickerAppointmentFormData
+
+  const clients = [ // TODO API
     {
       id: 1,
       label: "Jared Pinfold",
@@ -45,12 +46,12 @@ const AddDatePickerAppointmentModal = ({
     handleClose()
   }
 
-  // const onChange = (e: ChangeEvent<HTMLInputElement>) => {
-  //   setDatePickerAppointmentFormData((prevState) => ({
-  //     ...prevState,
-  //     [e.target.name]: e.target.value,
-  //   }))
-  // }
+  const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setDatePickerAppointmentFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: e.target.value,
+    }))
+  }
 
   const handleCheckboxChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDatePickerAppointmentFormData((prevState) => ({
@@ -72,7 +73,7 @@ const AddDatePickerAppointmentModal = ({
         return true
       }
     }
-    if (description === "" || start === null || checkend()) {
+    if (client === "" || start === null || checkend()) {
       return true
     }
     return false
@@ -84,25 +85,23 @@ const AddDatePickerAppointmentModal = ({
       <DialogContent>
         <DialogContentText>To add a appointment, please fill in the information below.</DialogContentText>
         <Box component="form">
-          {/* <TextField
-            name="description"
-            value={description}
-            margin="dense"
-            id="description"
-            label="Description"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={onChange}
-          /> */}
+
           <Autocomplete
-  disablePortal
-  options={clients}
-  sx={{ width: 300 }}
-  renderInput={(params) => <TextField {...params} label="Client" />}
-/>
+            disablePortal
+            options={clients}
+            sx={{ width: 300, marginBottom: 4, marginTop: 4 }}
+            // sx={{ marginTop: 4 }}
+            onChange={(_, newValue) =>
+              setDatePickerAppointmentFormData((prevState) => ({
+                ...prevState,
+                client: newValue?.label ?? '', // Default value if newValue is null              
+              }))
+            }
+            renderInput={(params) => <TextField {...params} label="Client Name" />}
+
+          />
           <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <Box mb={2} mt={5}>
+            <Box>
               <DateTimePicker
                 label="Start date"
                 value={start}
@@ -114,6 +113,7 @@ const AddDatePickerAppointmentModal = ({
                     start: new Date(newValue!),
                   }))
                 }
+                // TS Error: This does currently work, but look on mui docs for improved/ latest syntax
                 renderInput={(params) => <TextField {...params} />}
               />
             </Box>
@@ -138,6 +138,8 @@ const AddDatePickerAppointmentModal = ({
                   end: new Date(newValue!),
                 }))
               }
+              // TS Error: This does currently work, but look on mui docs for improved/ latest syntax
+
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
@@ -150,8 +152,19 @@ const AddDatePickerAppointmentModal = ({
             getOptionLabel={(option) => option.title}
             renderInput={(params) => <TextField {...params} label="Category" />}
           />
+          <TextField
+            name="Notes"
+            value={notes}
+            margin="dense"
+            id="description"
+            label="Description"
+            type="text"
+            fullWidth
+            variant="outlined"
+            onChange={onChange}
+          />
         </Box>
-      </DialogContent>
+      </DialogContent >
       <DialogActions>
         <Button color="error" onClick={onClose}>
           Cancel
@@ -160,8 +173,7 @@ const AddDatePickerAppointmentModal = ({
           Add
         </Button>
       </DialogActions>
-    </Dialog>
+    </Dialog >
   )
 }
 
-export default AddDatePickerAppointmentModal

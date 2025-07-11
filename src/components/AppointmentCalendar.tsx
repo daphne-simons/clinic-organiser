@@ -50,44 +50,46 @@ export interface ICategory {
 
 export interface IAppointmentInfo extends Event {
   _id: string;
-  description: string;
+  notes?: string;
   categoryId?: string;
 }
 
 export interface AppointmentFormData {
-  description: string;
+  notes?: string;
   categoryId?: string;
 }
 
 export interface DatePickerAppointmentFormData {
-  description: string;
+  client: string;
   categoryId?: string;
   allDay: boolean;
   start?: Date;
   end?: Date;
+  notes?: string;
 }
 
 export function AppointmentCalendar() {
   const [date, setDate] = useState(new Date());
   const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
-    description: "",
+    client: "",
     categoryId: undefined,
     allDay: false,
     start: undefined,
     end: undefined,
+    notes: "",
   };
 
   const categoriesTemp = [ //TODO API
-{
-  _id: "1",
-  title: "ACC",
-  color: "blue"
-},
-{
-  _id: "2",
-  title: "Private",
-  color: "green"
-}
+    {
+      _id: "1",
+      title: "ACC",
+      color: "blue"
+    },
+    {
+      _id: "2",
+      title: "Private",
+      color: "green"
+    }
   ]
   // States
   const [openDatepickerModal, setOpenDatepickerModal] = useState(false);
@@ -142,6 +144,7 @@ export function AppointmentCalendar() {
       end: datePickerAppointmentFormData.allDay
         ? addHours(datePickerAppointmentFormData.start, 12)
         : setMinToZero(datePickerAppointmentFormData.end),
+      notes: datePickerAppointmentFormData.notes,
     };
 
     const newAppointments = [...appointments, data];
