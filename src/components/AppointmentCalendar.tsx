@@ -11,15 +11,14 @@ import {
   Divider,
 } from "@mui/material";
 
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import { Calendar } from "react-big-calendar";
 
 import type { Event } from "react-big-calendar";
-
-import { format } from "date-fns/format";
-import { parse } from "date-fns/parse";
-import { startOfWeek } from "date-fns/startOfWeek";
-import { getDay } from "date-fns/getDay";
-import { enNZ } from "date-fns/locale/en-NZ";
+import type {
+  ICategory,
+  IAppointmentInfo,
+  DatePickerAppointmentFormData,
+} from "../models";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -28,45 +27,7 @@ import AppointmentInfoModal from "./AppointmentInfoModal";
 import { AddCategoryModal } from "./AddCategoryModal";
 import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal";
 import { generateId } from "../utils";
-
-const locales = {
-  "en-NZ": enNZ,
-};
-
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  startOfWeek: (date: any) => startOfWeek(date, { weekStartsOn: 1 }),
-  getDay,
-  locales,
-});
-
-export interface ICategory {
-  _id: string;
-  title: string;
-  color?: string;
-}
-
-export interface IAppointmentInfo extends Event {
-  _id: string;
-  notes?: string;
-  categoryId?: string;
-}
-
-export interface AppointmentFormData {
-  notes?: string;
-  categoryId?: string;
-}
-
-export interface DatePickerAppointmentFormData {
-  client: string;
-  categoryId?: string;
-  allDay: boolean;
-  start?: Date;
-  end?: Date;
-  notes?: string;
-}
+import { localizer } from "../localizer";
 
 export function AppointmentCalendar() {
   const [date, setDate] = useState(new Date());
@@ -79,18 +40,19 @@ export function AppointmentCalendar() {
     notes: "",
   };
 
-  const categoriesTemp = [ //TODO API
+  const categoriesTemp = [
+    //TODO API
     {
       _id: "1",
       title: "ACC",
-      color: "blue"
+      color: "blue",
     },
     {
       _id: "2",
       title: "Private",
-      color: "green"
-    }
-  ]
+      color: "green",
+    },
+  ];
   // States
   const [openDatepickerModal, setOpenDatepickerModal] = useState(false);
   const [openCategoryModal, setOpenCategoryModal] = useState(false);
@@ -108,22 +70,22 @@ export function AppointmentCalendar() {
 
   // Form Data
 
-  const handleSelectSlot = (appointment: Event) => {
+  function handleSelectSlot(appointment: Event) {
     setOpenDatepickerModal(true);
     setCurrentAppointment(appointment);
-  };
+  }
 
-  const handleSelectAppointment = (appointment: IAppointmentInfo) => {
+  function handleSelectAppointment(appointment: IAppointmentInfo) {
     setCurrentAppointment(appointment);
     setAppointmentInfoModal(true);
-  };
+  }
 
-  const handleDatePickerClose = () => {
+  function handleDatePickerClose() {
     setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData);
     setOpenDatepickerModal(false);
-  };
+  }
 
-  const onAddAppointmentFromDatePicker = (e: MouseEvent<HTMLButtonElement>) => {
+  function onAddAppointmentFromDatePicker(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
 
     const addHours = (date: Date | undefined, hours: number) => {
@@ -151,16 +113,16 @@ export function AppointmentCalendar() {
 
     setAppointments(newAppointments);
     setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData);
-  };
+  }
 
-  const onDeleteAppointment = () => {
+  function onDeleteAppointment() {
     setAppointments(() =>
       [...appointments].filter(
         (e) => e._id !== (currentAppointment as IAppointmentInfo)._id!
       )
     );
     setAppointmentInfoModal(false);
-  };
+  }
 
   const onNavigate = useCallback((newDate: Date) => {
     setDate(newDate);

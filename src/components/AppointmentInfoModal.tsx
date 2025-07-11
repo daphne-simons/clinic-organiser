@@ -1,19 +1,32 @@
-import type { SetStateAction, MouseEvent, Dispatch } from "react"
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, Box, Typography } from "@mui/material"
-import type { IAppointmentInfo } from "./AppointmentCalendar"
+import type { SetStateAction, MouseEvent, Dispatch } from "react";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  Box,
+  Typography,
+} from "@mui/material";
+import type { IAppointmentInfo } from "../models";
 
 interface IProps {
-  open: boolean
-  handleClose: Dispatch<SetStateAction<void>>
-  onDeleteAppointment: (e: MouseEvent<HTMLButtonElement>) => void
-  currentAppointment: IAppointmentInfo | null
+  open: boolean;
+  handleClose: Dispatch<SetStateAction<void>>;
+  onDeleteAppointment: (e: MouseEvent<HTMLButtonElement>) => void;
+  currentAppointment: IAppointmentInfo | null;
 }
 
-const AppointmentInfoModal = ({ open, handleClose, onDeleteAppointment, currentAppointment }: IProps) => {
-
-  // TODO: Add an update functionality in this 
-  const onClose = () => {
-    handleClose()
+function AppointmentInfoModal({
+  open,
+  handleClose,
+  onDeleteAppointment,
+  currentAppointment,
+}: IProps) {
+  // TODO: Add an update functionality in this
+  function onClose() {
+    handleClose();
   }
 
   return (
@@ -21,7 +34,11 @@ const AppointmentInfoModal = ({ open, handleClose, onDeleteAppointment, currentA
       <DialogTitle>Appointment Info</DialogTitle>
       <DialogContent>
         <DialogContentText>
-          <Typography sx={{ fontSize: 14, marginTop: 3 }} color="text.secondary" gutterBottom>
+          <Typography
+            sx={{ fontSize: 14, marginTop: 3 }}
+            color="text.secondary"
+            gutterBottom
+          >
             {currentAppointment?.description}
           </Typography>
         </DialogContentText>
@@ -36,7 +53,7 @@ const AppointmentInfoModal = ({ open, handleClose, onDeleteAppointment, currentA
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
 
-export default AppointmentInfoModal
+export default AppointmentInfoModal;

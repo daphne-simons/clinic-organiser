@@ -1,5 +1,5 @@
-import { useState, } from "react"
-import type { Dispatch, SetStateAction } from "react"
+import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import {
   Dialog,
   DialogActions,
@@ -14,26 +14,31 @@ import {
   ListItem,
   ListItemText,
   TextField,
-} from "@mui/material"
-import DeleteIcon from "@mui/icons-material/Delete"
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-import { HexColorPicker } from "react-colorful"
-import { type ICategory } from "./AppointmentCalendar"
-import { generateId } from "../utils"
+import { HexColorPicker } from "react-colorful";
+import { type ICategory } from "../models";
+import { generateId } from "../utils";
 
 interface IProps {
-  open: boolean
-  handleClose: Dispatch<SetStateAction<void>>
-  categories: ICategory[]
-  setCategories: Dispatch<SetStateAction<ICategory[]>>
+  open: boolean;
+  handleClose: Dispatch<SetStateAction<void>>;
+  categories: ICategory[];
+  setCategories: Dispatch<SetStateAction<ICategory[]>>;
 }
 
-export const AddCategoryModal = ({ open, handleClose, categories, setCategories }: IProps) => {
-  const [color, setColor] = useState("#b32aa9")
-  const [title, setTitle] = useState("")
+export function AddCategoryModal({
+  open,
+  handleClose,
+  categories,
+  setCategories,
+}: IProps) {
+  const [color, setColor] = useState("#b32aa9");
+  const [title, setTitle] = useState("");
 
-  const onAddCategory = () => {
-    setTitle("")
+  function onAddCategory() {
+    setTitle("");
     setCategories([
       ...categories,
       {
@@ -41,18 +46,24 @@ export const AddCategoryModal = ({ open, handleClose, categories, setCategories 
         color,
         title,
       },
-    ])
+    ]);
   }
 
-  const onDeleteCategory = (_id: string) => setCategories(categories.filter((category) => category._id !== _id))
+  function onDeleteCategory(_id: string) {
+    setCategories(categories.filter((category) => category._id !== _id));
+  }
 
-  const onClose = () => handleClose()
+  function onClose() {
+    handleClose();
+  }
 
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add category</DialogTitle>
       <DialogContent>
-        <DialogContentText>Create categories for your appointments.</DialogContentText>
+        <DialogContentText>
+          Create categories for your appointments.
+        </DialogContentText>
         <Box>
           <TextField
             name="title"
@@ -66,13 +77,17 @@ export const AddCategoryModal = ({ open, handleClose, categories, setCategories 
             required
             variant="outlined"
             onChange={(e) => {
-              setTitle(e.target.value)
+              setTitle(e.target.value);
             }}
             value={title}
           />
           <Box sx={{ display: "flex", justifyContent: "space-around" }}>
             <HexColorPicker color={color} onChange={setColor} />
-            <Box sx={{ height: 80, width: 80, borderRadius: 1 }} className="value" style={{ backgroundColor: color }}></Box>
+            <Box
+              sx={{ height: 80, width: 80, borderRadius: 1 }}
+              className="value"
+              style={{ backgroundColor: color }}
+            ></Box>
           </Box>
           <Box>
             <List sx={{ marginTop: 3 }}>
@@ -80,13 +95,22 @@ export const AddCategoryModal = ({ open, handleClose, categories, setCategories 
                 <ListItem
                   key={category.title}
                   secondaryAction={
-                    <IconButton onClick={() => onDeleteCategory(category._id)} color="error" edge="end">
+                    <IconButton
+                      onClick={() => onDeleteCategory(category._id)}
+                      color="error"
+                      edge="end"
+                    >
                       <DeleteIcon />
                     </IconButton>
                   }
                 >
                   <Box
-                    sx={{ height: 40, width: 40, borderRadius: 1, marginRight: 1 }}
+                    sx={{
+                      height: 40,
+                      width: 40,
+                      borderRadius: 1,
+                      marginRight: 1,
+                    }}
                     className="value"
                     style={{ backgroundColor: category.color }}
                   ></Box>
@@ -99,7 +123,12 @@ export const AddCategoryModal = ({ open, handleClose, categories, setCategories 
       </DialogContent>
       <Divider />
       <DialogActions sx={{ marginTop: 2 }}>
-        <Button sx={{ marginRight: 2 }} variant="contained" color="error" onClick={onClose}>
+        <Button
+          sx={{ marginRight: 2 }}
+          variant="contained"
+          color="error"
+          onClick={onClose}
+        >
           Cancel
         </Button>
         <Button
@@ -113,5 +142,5 @@ export const AddCategoryModal = ({ open, handleClose, categories, setCategories 
         </Button>
       </DialogActions>
     </Dialog>
-  )
+  );
 }
