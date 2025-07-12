@@ -1,4 +1,74 @@
-Backend Implementation Guide
+# Backend Implementation Plan / Research
+
+## PostgreSQL with JSONB columns
+Why this is ideal:
+Schema flexibility: Store dynamic form schemas and data in JSONB columns while maintaining relational integrity for core entities (patients, appointments, etc.)
+Query performance: PostgreSQL's JSONB is highly optimized with GIN indexes, allowing fast queries on dynamic fields
+Hybrid approach: Keep structured data (patient ID, timestamps) in regular columns, dynamic form data in JSONB
+Rich querying: Can query, filter, and aggregate on dynamic fields efficiently
+Example structure:
+
+```sql
+-- Core patient table
+patients (id, name, email, created_at, custom_data JSONB)
+
+-- Form definitions
+form_templates (id, name, schema JSONB, created_at)
+
+-- Dynamic entries
+form_entries (id, patient_id, form_template_id, data JSONB, created_at)
+
+``` 
+
+### What is JSONB?
+JSONB stands for "JSON Binary" - it's PostgreSQL's optimized way of storing JSON data.
+
+The key differences:
+
+Regular JSON column:
+- Stores JSON as plain text
+- Preserves exact formatting, whitespace, key order
+- Slower to query because it has to parse the text every time
+
+JSONB column:
+- Stores JSON in a binary format (hence "JSON Binary")
+- Removes whitespace, doesn't preserve key order
+- Much faster to query because it's pre-parsed
+- Supports indexing for lightning-fast lookups
+
+Why it's perfect for your use case:
+
+``` sql
+-- Instead of having rigid columns like this:
+patients (id, name, email, blood_pressure, allergies, notes)
+
+-- You can have flexible storage like this:
+patients (id, name, email, custom_data JSONB)
+Where custom_data might contain:
+``` 
+
+```json
+{
+  "blood_pressure": "120/80",
+  "allergies": ["peanuts", "shellfish"],
+  "treatment_history": [
+    {"date": "2024-01-15", "treatment": "acupuncture", "points": ["LI4", "ST36"]}
+  ],
+  "custom_field_123": "whatever your acupuncturist wants to track"
+}
+```
+
+The magic: You can query this dynamic data almost as fast as regular columns:
+
+```sql
+-- Find patients with high blood pressure
+SELECT * FROM patients WHERE custom_data->>'blood_pressure' LIKE '14%/%';
+
+-- Find patients with specific allergies
+SELECT * FROM patients WHERE custom_data->'allergies' ? 'peanuts';
+This lets your acupuncturist create any fields she wants without you having to modify the database schema!
+```
+
 ## 1. Backend Project Setup
 
 ### Install Dependencies
