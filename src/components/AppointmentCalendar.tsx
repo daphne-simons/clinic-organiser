@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import type { MouseEvent } from "react";
 import {
   Box,
   Button,
@@ -26,7 +25,6 @@ import AppointmentInfo from "./AppointmentInfo";
 import AppointmentInfoModal from "./AppointmentInfoModal";
 import { AddCategoryModal } from "./AddCategoryModal";
 import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal";
-import { generateId } from "../utils";
 import { localizer } from "../localizer";
 
 export function AppointmentCalendar() {
@@ -85,34 +83,8 @@ export function AppointmentCalendar() {
     setOpenDatepickerModal(false);
   }
 
-  function onAddAppointmentFromDatePicker(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-
-    const addHours = (date: Date | undefined, hours: number) => {
-      return date ? date.setHours(date.getHours() + hours) : undefined;
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setMinToZero = (date: any) => {
-      date.setSeconds(0);
-
-      return date;
-    };
-
-    const data: IAppointmentInfo = {
-      ...datePickerAppointmentFormData,
-      _id: generateId(),
-      start: setMinToZero(datePickerAppointmentFormData.start),
-      end: datePickerAppointmentFormData.allDay
-        ? addHours(datePickerAppointmentFormData.start, 12)
-        : setMinToZero(datePickerAppointmentFormData.end),
-      notes: datePickerAppointmentFormData.notes,
-    };
-
-    const newAppointments = [...appointments, data];
-
-    setAppointments(newAppointments);
-    setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData);
+  function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
+    setAppointments([...appointments, appointment]);
   }
 
   function onDeleteAppointment() {

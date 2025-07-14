@@ -11,7 +11,7 @@ const AppointmentInfo = ({ event }: EventProps<IAppointmentInfo>) => {
 
   return (
     <>
-      <Typography>{event.description}</Typography>
+      <Typography>{event.notes}</Typography>
     </>
   );
 };
