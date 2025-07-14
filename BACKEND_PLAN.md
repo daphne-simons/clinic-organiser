@@ -2,11 +2,12 @@
 
 ## PostgreSQL with JSONB columns
 Why this is ideal:
-Schema flexibility: Store dynamic form schemas and data in JSONB columns while maintaining relational integrity for core entities (patients, appointments, etc.)
-Query performance: PostgreSQL's JSONB is highly optimized with GIN indexes, allowing fast queries on dynamic fields
-Hybrid approach: Keep structured data (patient ID, timestamps) in regular columns, dynamic form data in JSONB
-Rich querying: Can query, filter, and aggregate on dynamic fields efficiently
-Example structure:
+
+- Schema flexibility: Store dynamic form schemas and data in JSONB columns while maintaining relational integrity for core entities (patients, appointments, etc.)
+- Query performance: PostgreSQL's JSONB is highly optimized with GIN indexes, allowing fast queries on dynamic fields
+- Hybrid approach: Keep structured data (patient ID, timestamps) in regular columns, dynamic form data in JSONB
+- Rich querying: Can query, filter, and aggregate on dynamic fields efficiently
+- Example structure:
 
 ```sql
 -- Core patient table
