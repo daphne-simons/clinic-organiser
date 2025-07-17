@@ -45,7 +45,6 @@ interface IProps {
 export default function AddDatePickerAppointmentModal({
   open,
   handleClose,
-
   onAddAppointment,
   categories,
 }: IProps) {
@@ -59,6 +58,7 @@ export default function AddDatePickerAppointmentModal({
     notes: "",
   };
 
+  console.log("render")
 const [formData, setFormData] =
     useState<DatePickerAppointmentFormData>(
       initialFormData
@@ -71,9 +71,12 @@ const [formData, setFormData] =
   function onClose() {
     handleClose()
   }
-  const [text, setText] = useState("")
-  function onChange(e: ChangeEvent<HTMLInputElement>) {
-    setText(e.target.value)
+  function handleNotesChange(e: ChangeEvent<HTMLInputElement>) {
+    console.log("typed:", e.target.value)
+    setFormData((prevState) => ({
+      ...prevState,
+      notes: e.target.value
+    }))
   }
 
   function handleCategoryChange(
@@ -313,14 +316,14 @@ const [formData, setFormData] =
             </Typography>
             <TextField
               name="notes"
-              value={text}
+              value={formData.notes}
               margin="dense"
               id="notes"
               label="Optional notes"
               type="text"
               fullWidth
               variant="outlined"
-              onChange={onChange}
+              onChange={handleNotesChange}
             />
           </Box>
         </Box>
