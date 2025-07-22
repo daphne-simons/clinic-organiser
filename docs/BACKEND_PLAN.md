@@ -86,40 +86,6 @@ npm install -D typescript ts-node nodemon concurrently
 npm install -D @types/pg
 ```
 
-pkg.json should look something like this: 
-```json
-// package.json
-{
-  "name": "acupuncture-backend",
-  "version": "1.0.0",
-  "description": "Backend for acupuncture clinic management",
-  "main": "dist/server.js",
-  "scripts": {
-    "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts",
-    "build": "tsc",
-    "migrate": "tsx scripts/migrate.ts"
-  },
-  "dependencies": {
-    "express": "^4.18.2",
-    "pg": "^8.11.0",
-    "cors": "^2.8.5",
-    "helmet": "^7.0.0",
-    "dotenv": "^16.0.3",
-    "joi": "^17.9.2"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.17",
-    "@types/node": "^20.3.1",
-    "@types/pg": "^8.10.2",
-    "@types/cors": "^2.8.13",
-    "@types/joi": "^17.2.3",
-    "typescript": "^5.1.3",
-    "nodemon": "^2.0.22",
-    "tsx": "^3.12.7"
-  }
-}
-``` 
 
 ### TypeScript Configuration
 ```bash
