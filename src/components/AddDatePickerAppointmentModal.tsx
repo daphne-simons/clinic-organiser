@@ -23,6 +23,7 @@ import {
   LocalizationProvider,
   DatePicker,
   MultiSectionDigitalClock,
+  TimePicker,
 } from "@mui/x-date-pickers"
 import dayjs from "dayjs"
 import type { DatePickerAppointmentFormData, IAppointmentInfo, ICategory } from "../models"
@@ -59,7 +60,7 @@ export default function AddDatePickerAppointmentModal({
   };
 
   console.log("render")
-const [formData, setFormData] =
+  const [formData, setFormData] =
     useState<DatePickerAppointmentFormData>(
       initialFormData
     );
@@ -91,30 +92,30 @@ const [formData, setFormData] =
 
   function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
-   
-       const addHours = (date: Date | undefined, hours: number) => {
-         return date ? date.setHours(date.getHours() + hours) : undefined;
-       };
-   
-       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-       const setMinToZero = (date: any) => {
-         date.setSeconds(0);
-   
-         return date;
-       };
-   
-       const newAppointment: IAppointmentInfo = {
-         ...formData,
-         _id: generateId(),
-         start: setMinToZero(formData.start),
-         end: formData.allDay
-           ? addHours(formData.start, 12)
-           : setMinToZero(formData.end),
-         notes: formData.notes,
-       };
-   
-       onAddAppointment(newAppointment);
-       setFormData(initialFormData);
+
+    const addHours = (date: Date | undefined, hours: number) => {
+      return date ? date.setHours(date.getHours() + hours) : undefined;
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const setMinToZero = (date: any) => {
+      date.setSeconds(0);
+
+      return date;
+    };
+
+    const newAppointment: IAppointmentInfo = {
+      ...formData,
+      _id: generateId(),
+      start: setMinToZero(formData.start),
+      end: formData.allDay
+        ? addHours(formData.start, 12)
+        : setMinToZero(formData.end),
+      notes: formData.notes,
+    }
+
+    onAddAppointment(newAppointment)
+    setFormData(initialFormData)
   }
 
   // Handle Date change
@@ -126,12 +127,12 @@ const [formData, setFormData] =
       end:
         newValue && prevState.end
           ? new Date(
-              newValue.getFullYear(),
-              newValue.getMonth(),
-              newValue.getDate(),
-              prevState.end.getHours(),
-              prevState.end.getMinutes()
-            )
+            newValue.getFullYear(),
+            newValue.getMonth(),
+            newValue.getDate(),
+            prevState.end.getHours(),
+            prevState.end.getMinutes()
+          )
           : undefined,
     }))
   }
@@ -245,48 +246,24 @@ const [formData, setFormData] =
                 flexWrap: "wrap",
               }}
             >
-              {/* // STRETCH: handle both start and end time in a single input and handler function */}
-              {/* <TimeRangePicker
-                value={value}
-                onChange={handleTimeChange}
-              /> */}
               {/* Start Time */}
               <Box>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  Start Time
-                </Typography>
-                <MultiSectionDigitalClock
+                <TimePicker
+                  label="Start Time"
                   value={formData.start}
                   onChange={handleStartTimeChange}
-                  sx={{
-                    border: "1px solid #e0e0e0",
-                    borderRadius: 1,
-                    maxHeight: 50,
-                    overflow: "auto",
-                  }}
                 />
               </Box>
-
               {/* "to" separator */}
               <Typography variant="h6" sx={{ mt: 3 }}>
                 to
               </Typography>
-
               {/* End Time */}
               <Box>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  End Time
-                </Typography>
-                <MultiSectionDigitalClock
+                <TimePicker
+                  label="End Time"
                   value={formData.end}
                   onChange={handleEndTimeChange}
-                  minTime={formData.start ? dayjs(formData.start).toDate() : undefined}
-                  sx={{
-                    border: "1px solid #e0e0e0",
-                    borderRadius: 1,
-                    maxHeight: 50,
-                    overflow: "auto",
-                  }}
                 />
               </Box>
             </Box>
