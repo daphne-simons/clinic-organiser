@@ -59,7 +59,6 @@ export default function AddDatePickerAppointmentModal({
     notes: "",
   };
 
-  console.log("render")
   const [formData, setFormData] =
     useState<DatePickerAppointmentFormData>(
       initialFormData
@@ -73,7 +72,6 @@ export default function AddDatePickerAppointmentModal({
     handleClose()
   }
   function handleNotesChange(e: ChangeEvent<HTMLInputElement>) {
-    console.log("typed:", e.target.value)
     setFormData((prevState) => ({
       ...prevState,
       notes: e.target.value
@@ -116,6 +114,7 @@ export default function AddDatePickerAppointmentModal({
 
     onAddAppointment(newAppointment)
     setFormData(initialFormData)
+    handleClose()
   }
 
   // Handle Date change
@@ -166,16 +165,6 @@ export default function AddDatePickerAppointmentModal({
     }
   }
 
-  // STRETCH: handle both start and end time in a single input and handler function
-  // const handleTimeChange = (newValue: Date | null) => {
-  //   if (newValue) {
-  //     setDatePickerAppointmentFormData((prevState) => ({
-  //       ...prevState,
-  //       start: newValue,
-  //       end: newValue,
-  //     }))
-  //   }
-  // }
   function isDisabled() {
     const checkend = () => {
       if (!formData.allDay && formData.end === null) {
