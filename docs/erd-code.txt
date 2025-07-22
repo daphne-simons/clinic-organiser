@@ -2,26 +2,11 @@ Table clients {
   id serial [primary key]
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: null]
-  deleted_at timestamp [default: null]
-
   first_name varchar(100) [not null]
   last_name varchar(100) [not null]
   dob date [not null]
-  gender varchar(20) [not null]
-  occupation varchar(100) [not null]
   mobile varchar(20) 
-  email varchar(100) [unique]
-  address text [not null]
-
-  emergency_contact_name varchar(100) [not null]
-  emergency_contact_number varchar(20) [not null]
-  emergency_contact_relationship varchar(50) [not null]
-
-  gp varchar(100)
-  referred_by varchar(100)
-  previously_received_acupuncture varchar(10)
-
-  notes text
+  email varchar(100) [unique] 
   custom_fields jsonb [default: `{}`]
 }
 
@@ -30,22 +15,6 @@ Table medical_history {
   client_id integer [unique]
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: null]
-  
-  allergies boolean [default: false]
-  asthma boolean [default: false]
-  blood_disorder boolean [default: false]
-  blood_pressure_high boolean [default: false]
-  blood_pressure_low boolean [default: false]
-  bowel_constipation boolean [default: false]
-  bowel_diarrhea boolean [default: false]
-  bowel_ibs boolean [default: false]
-  
-  any_other_disease text
-  any_other_mental_disease text
-  current_medications text
-  current_supplements text
-  family_history_of_illness text
-  
   custom_fields jsonb [default: `{}`]
 }
 
@@ -54,7 +23,6 @@ Table tcm {
   client_id integer [unique]
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: null]
-  
   custom_fields jsonb [default: `{}`]
 }
 
@@ -63,19 +31,9 @@ Table treatments {
   client_id integer [unique]
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: null]
-  
-  treatment_date date [not null]
+  date date [not null]
   duration_minutes integer
-  treatment_type varchar(50)
-  practitioner_name varchar(100)
-  
-  points_used text[]
-  treatment_notes text
-  client_feedback text
-  
-  cost DECIMAL(10,2)
-  payment_status VARCHAR(20) [default: `pending`]
-
+  notes text
   custom_fields jsonb [default: `{}`]
 }
 
@@ -84,22 +42,16 @@ Table appointments {
   client_id integer [unique]
   created_at timestamp [default: `now()`]
   updated_at timestamp [default: null]
-  
-  scheduled_at timestamp [not null]
-  duration_minutes integer [default: 60]
+  start_time timestamp [not null]
+  end_time timestamp [not null]
   appointment_type varchar(50)
-  status varchar(20) [default: 'scheduled']
-  
   notes text
-  reminder_sent boolean [default: false]
-  
   custom_fields jsonb [default: `{}`]
 }
 
-Table form_configs {
+Table forms {
   id varchar [primary key]
   custom_fields jsonb [default: `{}`]
-
 }
 
 Ref: medical_history.client_id - clients.id [delete: cascade]

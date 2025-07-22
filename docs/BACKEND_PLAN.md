@@ -157,328 +157,9 @@ Update `tsconfig.json`:
 
 ## 2. Database Setup
 
-### PostgreSQL Schema (schema.sql)
-```sql
--- Create database
-CREATE DATABASE clinic_management;
+### DB Schemas and Migration - PostgreSQL
 
--- Connect to the database
-\c clinic_management;
-
--- Clients table
-CREATE TABLE clients (
-    id SERIAL PRIMARY KEY,
-    created_at TIMESTAMP DEFAULT NOW(),
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    dob DATE,
-    gender VARCHAR(20),
-    occupation VARCHAR(100),
-    mobile VARCHAR(20),
-    email VARCHAR(100) UNIQUE,
-    address TEXT,
-    emergency_contact_name VARCHAR(100),
-    emergency_contact_number VARCHAR(20),
-    emergency_contact_relationship VARCHAR(50),
-    gp VARCHAR(100),
-    referred_by VARCHAR(100),
-    previously_received_acupuncture VARCHAR(10),
-    notes TEXT
-);
-
--- Medical history table
-CREATE TABLE medical_history (
-    id SERIAL PRIMARY KEY,
-    client_id INTEGER UNIQUE REFERENCES clients(id) ON DELETE CASCADE,
-    -- Medical conditions (boolean fields)
-    allergies BOOLEAN DEFAULT FALSE,
-    asthma BOOLEAN DEFAULT FALSE,
-    blood_disorder BOOLEAN DEFAULT FALSE,
-    blood_pressure_high BOOLEAN DEFAULT FALSE,
-    blood_pressure_low BOOLEAN DEFAULT FALSE,
-    bowel_constipation BOOLEAN DEFAULT FALSE,
-    bowel_diarrhea BOOLEAN DEFAULT FALSE,
-    --  etc, mostly booleans
-    -- Text descriptions
-    any_other_disease TEXT,
-    any_other_mental_disease TEXT,
-    current_medications TEXT,
-    current_supplements TEXT,
-    family_history_of_illness TEXT
-);
-
--- TCM table with JSONB for custom fields
-CREATE TABLE tcm (
-    id SERIAL PRIMARY KEY,
-    client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT NOW(),
-    custom_data JSONB DEFAULT '{}'::jsonb
-);
-
--- Treatments table with JSONB for custom fields
-CREATE TABLE treatments (
-    id SERIAL PRIMARY KEY,
-    client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT NOW(),
-    custom_data JSONB DEFAULT '{}'::jsonb
-);
-
--- Appointments table
-CREATE TABLE appointments (
-    id SERIAL PRIMARY KEY,
-    client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT NOW(),
-    scheduled_at TIMESTAMP NOT NULL,
-    status VARCHAR(20) DEFAULT 'scheduled',
-    notes TEXT
-);
-
--- Form templates for dynamic forms
-CREATE TABLE form_templates (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    schema JSONB NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
-);
-
--- Create indexes for performance
-CREATE INDEX idx_clients_email ON clients(email);
-CREATE INDEX idx_medical_history_client_id ON medical_history(client_id);
-CREATE INDEX idx_treatments_client_id ON treatments(client_id);
-CREATE INDEX idx_appointments_client_id ON appointments(client_id);
-CREATE INDEX idx_appointments_scheduled_at ON appointments(scheduled_at);
-CREATE INDEX idx_tcm_client_id ON tcm(client_id);
-CREATE INDEX idx_form_templates_name ON form_templates(name);
-
--- JSONB indexes for custom data
-CREATE INDEX idx_treatments_custom_data ON treatments USING GIN (custom_data);
-CREATE INDEX idx_tcm_custom_data ON tcm USING GIN (custom_data);
-CREATE INDEX idx_form_templates_schema ON form_templates USING GIN (schema);
-```
-
-## 3. Environment Configuration
-
-### .env file
-```env
-
-// .env
-DATABASE_URL=postgresql://username:password@localhost:5432/acupuncture_db
-PORT=3000
-NODE_ENV=development
-
-```
-
-## 4. Core Server Setup
-
-### src/config/database.ts
-```typescript
-import { Pool } from 'pg';
-
-// PostgreSQL connection
-export const pool = new Pool({
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
-
-// src/database/connection.ts
-import { Pool, PoolConfig } from 'pg';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const config: PoolConfig = {
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-};
-
-const pool = new Pool(config);
-
-export default pool;
-
-```
-
-### src/types/index.ts
-
-```typescript
-export interface Client {
-  id: number;
-  created_at: Date;
-  updated_at: Date;
-  first_name: string;
-  last_name: string;
-  dob?: Date;
-  gender?: string;
-  occupation?: string;
-  mobile?: string;
-  email?: string;
-  address?: string;
-  emergency_contact_name?: string;
-  emergency_contact_number?: string;
-  emergency_contact_relationship?: string;
-  gp?: string;
-  referred_by?: string;
-  previously_received_acupuncture?: string;
-  notes?: string;
-  custom_fields?: Record<string, any>;
-  deleted_at?: Date;
-}
-
-export interface CreateClientRequest {
-  first_name: string;
-  last_name: string;
-  dob?: string;
-  gender?: string;
-  occupation?: string;
-  mobile?: string;
-  email?: string;
-  address?: string;
-  emergency_contact_name?: string;
-  emergency_contact_number?: string;
-  emergency_contact_relationship?: string;
-  gp?: string;
-  referred_by?: string;
-  previously_received_acupuncture?: string;
-  notes?: string;
-  custom_fields?: Record<string, any>;
-}
-
-export interface MedicalHistory {
-  id: number;
-  client_id: number;
-  created_at: Date;
-  updated_at: Date;
-  allergies?: boolean;
-  asthma?: boolean;
-  blood_disorder?: boolean;
-  blood_pressure_high?: boolean;
-  blood_pressure_low?: boolean;
-  bowel_constipation?: boolean;
-  bowel_diarrhea?: boolean;
-  bowel_ibs?: boolean;
-  any_other_disease?: string;
-  any_other_mental_disease?: string;
-  current_medications?: string;
-  current_supplements?: string;
-  family_history_of_illness?: string;
-  custom_conditions?: Record<string, any>;
-}
-
-export interface CreateMedicalHistoryRequest {
-  allergies?: boolean;
-  asthma?: boolean;
-  blood_disorder?: boolean;
-  blood_pressure_high?: boolean;
-  blood_pressure_low?: boolean;
-  bowel_constipation?: boolean;
-  bowel_diarrhea?: boolean;
-  bowel_ibs?: boolean;
-  any_other_disease?: string;
-  any_other_mental_disease?: string;
-  current_medications?: string;
-  current_supplements?: string;
-  family_history_of_illness?: string;
-  custom_conditions?: Record<string, any>;
-}
-
-export interface Treatment {
-  id: number;
-  client_id: number;
-  created_at: Date;
-  updated_at: Date;
-  treatment_date: Date;
-  duration_minutes?: number;
-  treatment_type?: string;
-  practitioner_name?: string;
-  points_used?: string[];
-  treatment_notes?: string;
-  client_feedback?: string;
-  treatment_data?: Record<string, any>;
-  cost?: number;
-  payment_status?: 'pending' | 'paid' | 'cancelled';
-}
-
-export interface CreateTreatmentRequest {
-  client_id: number;
-  treatment_date: string;
-  duration_minutes?: number;
-  treatment_type?: string;
-  practitioner_name?: string;
-  points_used?: string[];
-  treatment_notes?: string;
-  client_feedback?: string;
-  treatment_data?: Record<string, any>;
-  cost?: number;
-  payment_status?: 'pending' | 'paid' | 'cancelled';
-}
-
-export interface Appointment {
-  id: number;
-  client_id: number;
-  created_at: Date;
-  updated_at: Date;
-  scheduled_at: Date;
-  duration_minutes?: number;
-  appointment_type?: string;
-  status?: 'scheduled' | 'confirmed' | 'cancelled' | 'completed';
-  notes?: string;
-  reminder_sent?: boolean;
-  custom_fields?: Record<string, any>;
-}
-
-export interface CreateAppointmentRequest {
-  client_id: number;
-  scheduled_at: string;
-  duration_minutes?: number;
-  appointment_type?: string;
-  status?: 'scheduled' | 'confirmed' | 'cancelled' | 'completed';
-  notes?: string;
-  custom_fields?: Record<string, any>;
-}
-
-export interface TCMAssessment {
-  id: number;
-  client_id: number;
-  created_at: Date;
-  updated_at: Date;
-  assessment_data?: Record<string, any>;
-  pulse_quality?: string;
-  tongue_description?: string;
-  constitution_type?: string;
-  session_id?: number;
-}
-
-export interface CreateTCMAssessmentRequest {
-  client_id: number;
-  assessment_data?: Record<string, any>;
-  pulse_quality?: string;
-  tongue_description?: string;
-  constitution_type?: string;
-  session_id?: number;
-}
-
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-  count?: number;
-}
-```
-
-### DB Schemas and Migration
-
-<!-- // src/database/schema.sql -->
+<!-- // src/database/schema.sql  -->
 ```sql
 -- Create database schema with JSONB support
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -488,7 +169,6 @@ CREATE TABLE clients (
   id SERIAL PRIMARY KEY,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  
   -- Core client fields
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
@@ -513,8 +193,6 @@ CREATE TABLE clients (
   notes TEXT,
   custom_fields JSONB DEFAULT '{}',
   
-  -- Soft delete
-  deleted_at TIMESTAMP NULL
 );
 
 -- Medical history with boolean fields + JSONB for custom conditions
@@ -523,27 +201,8 @@ CREATE TABLE medical_history (
   client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  
-  -- Standard boolean conditions
-  allergies BOOLEAN DEFAULT FALSE,
-  asthma BOOLEAN DEFAULT FALSE,
-  blood_disorder BOOLEAN DEFAULT FALSE,
-  blood_pressure_high BOOLEAN DEFAULT FALSE,
-  blood_pressure_low BOOLEAN DEFAULT FALSE,
-  bowel_constipation BOOLEAN DEFAULT FALSE,
-  bowel_diarrhea BOOLEAN DEFAULT FALSE,
-  bowel_ibs BOOLEAN DEFAULT FALSE,
-  
-  -- Text descriptions
-  any_other_disease TEXT,
-  any_other_mental_disease TEXT,
-  current_medications TEXT,
-  current_supplements TEXT,
-  family_history_of_illness TEXT,
-  
   -- Custom medical conditions and fields
-  custom_conditions JSONB DEFAULT '{}',
-  
+  custom_fields JSONB DEFAULT '{}',
   UNIQUE(client_id)
 );
 
@@ -553,17 +212,7 @@ CREATE TABLE tcm (
   client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  
-  -- Store all TCM data in JSONB for maximum flexibility
-  assessment_data JSONB DEFAULT '{}',
-  
-  -- Common TCM fields that might be queried often
-  pulse_quality VARCHAR(50),
-  tongue_description TEXT,
-  constitution_type VARCHAR(50),
-  
-  -- Session reference if this is session-specific
-  session_id INTEGER
+  custom_fields JSONB DEFAULT '{}',
 );
 
 -- Treatments with core fields + JSONB for treatment details
@@ -572,24 +221,13 @@ CREATE TABLE treatments (
   client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  
   -- Core treatment info
-  treatment_date DATE NOT NULL,
+  date DATE NOT NULL,
   duration_minutes INTEGER,
-  treatment_type VARCHAR(50),
-  practitioner_name VARCHAR(100),
-  
   -- Flexible treatment details
-  points_used TEXT[],
-  treatment_notes TEXT,
-  client_feedback TEXT,
-  
+  notes TEXT,
   -- All custom treatment data in JSONB
-  treatment_data JSONB DEFAULT '{}',
-  
-  -- Billing info
-  cost DECIMAL(10,2),
-  payment_status VARCHAR(20) DEFAULT 'pending'
+  custom_fields jsonb [default: `{}`]
 );
 
 -- Appointments
@@ -598,19 +236,21 @@ CREATE TABLE appointments (
   client_id INTEGER REFERENCES clients(id) ON DELETE CASCADE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  
-  scheduled_at TIMESTAMP NOT NULL,
-  duration_minutes INTEGER DEFAULT 60,
+  start_time TIMESTAMP NOT NULL,
+  end_time TIMESTAMP NOT NULL,
   appointment_type VARCHAR(50),
-  status VARCHAR(20) DEFAULT 'scheduled',
-  
   -- Appointment details
   notes TEXT,
-  reminder_sent BOOLEAN DEFAULT FALSE,
-  
   -- Custom appointment data
   custom_fields JSONB DEFAULT '{}'
 );
+
+-- Forms
+CREATE TABLE forms (
+  id VARCHAR(50) PRIMARY KEY,
+  custom_fields JSONB DEFAULT '{}'
+)
+-- 
 
 -- Indexes for better performance
 CREATE INDEX idx_clients_email ON clients(email);
@@ -676,6 +316,66 @@ async function migrate(): Promise<void> {
 
 migrate();
 ```
+
+## 3. Environment Configuration
+
+### .env file
+```env
+
+// .env
+DATABASE_URL=postgresql://username:password@localhost:5432/acupuncture_db
+PORT=3000
+NODE_ENV=development
+
+```
+
+## 4. Core Server Setup
+
+### src/config/database.ts
+```typescript
+import { Pool } from 'pg';
+
+// PostgreSQL connection
+export const pool = new Pool({
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT || '5432'),
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+});
+
+// src/database/connection.ts
+import { Pool, PoolConfig } from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const config: PoolConfig = {
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+};
+
+const pool = new Pool(config);
+
+export default pool;
+
+```
+
+### src/types/index.ts
+
+```typescript
+
+TBC 
+
+```
+
+
 
 ### src/middleware/auth.ts
 ```typescript
