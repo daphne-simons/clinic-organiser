@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "start": "node dist/server.js",
-    "migrate": "tsx scripts/migrate.ts",
+    "migrate": "tsx server/database/scripts/migrate.ts",
     "test": "vitest"
   },
   "dependencies": {

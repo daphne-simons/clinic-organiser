@@ -125,7 +125,8 @@ Update `tsconfig.json`:
 
 ### DB Schemas and Migration - PostgreSQL
 
-<!-- // src/database/schema.sql  -->
+`server/database/schema.sql` 
+
 ```sql
 -- Create database schema with JSONB support
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -224,7 +225,7 @@ CREATE INDEX idx_clients_mobile ON clients(mobile);
 CREATE INDEX idx_clients_custom_fields ON clients USING GIN(custom_fields);
 
 CREATE INDEX idx_medical_history_client_id ON medical_history(client_id);
-CREATE INDEX idx_medical_history_custom_conditions ON medical_history USING GIN(custom_conditions);
+CREATE INDEX idx_medical_history_custom_conditions ON medical_history USING GIN(custom_fields);
 
 CREATE INDEX idx_tcm_client_id ON tcm(client_id);
 CREATE INDEX idx_tcm_assessment_data ON tcm USING GIN(assessment_data);
@@ -256,8 +257,8 @@ CREATE TRIGGER update_appointments_updated_at BEFORE UPDATE ON appointments FOR 
 ### Migration: 
 
 ```typescript
-// scripts/migrate.ts
-import pool from '../src/database/connection';
+// server/database/migrate.ts
+import pool from '../database/connection';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -266,7 +267,7 @@ async function migrate(): Promise<void> {
     console.log('Starting database migration...');
     
     const schemaSQL = readFileSync(
-      join(__dirname, '../src/database/schema.sql'),
+      join(__dirname, '../database/schema.sql'),
       'utf8'
     );
     
@@ -283,21 +284,8 @@ async function migrate(): Promise<void> {
 migrate();
 ```
 
-## 3. Environment Configuration
 
-### .env file
-```env
-
-// .env
-DATABASE_URL=postgresql://username:password@localhost:5432/acupuncture_db
-PORT=3000
-NODE_ENV=development
-
-```
-
-## 4. Core Server Setup
-
-### src/config/database.ts
+### server/database/config/database.ts
 ```typescript
 import { Pool } from 'pg';
 
@@ -313,7 +301,7 @@ export const pool = new Pool({
   connectionTimeoutMillis: 2000,
 });
 
-// src/database/connection.ts
+// server/database/config/connection.ts
 import { Pool, PoolConfig } from 'pg';
 import dotenv from 'dotenv';
 
@@ -332,6 +320,21 @@ const pool = new Pool(config);
 export default pool;
 
 ```
+
+## 3. Environment Configuration
+
+### .env file
+```env
+
+// .env
+DATABASE_URL=postgresql://username:password@localhost:5432/acupuncture_db
+PORT=3000
+NODE_ENV=development
+
+```
+
+## 4. Core Server Setup
+
 
 ### src/types/index.ts
 
