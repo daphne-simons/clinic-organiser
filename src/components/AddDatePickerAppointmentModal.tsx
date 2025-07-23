@@ -22,10 +22,8 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import {
   LocalizationProvider,
   DatePicker,
-  MultiSectionDigitalClock,
   TimePicker,
 } from "@mui/x-date-pickers"
-import dayjs from "dayjs"
 import type { DatePickerAppointmentFormData, IAppointmentInfo, ICategory } from "../models"
 import { getAllClientNames } from "../apis/clients"
 import { useQuery } from "@tanstack/react-query"
