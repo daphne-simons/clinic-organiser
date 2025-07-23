@@ -1,27 +1,95 @@
-import type { Event } from "react-big-calendar";
+import type { Event } from "react-big-calendar"
 
+//////// Client stuff
+export interface IClient {
+  id: number
+  created_at?: string
+  updated_at?: string
+  first_name: string
+  last_name: string
+  dob: string
+  gender: string
+  occupation: string
+  mobile: string
+  email: string
+  address: string
+  emergency_contact_name: string
+  emergency_contact_number: string
+  emergency_contact_relationship: string
+  gp: string
+  referred_by: string
+  previously_received_acupuncture: string
+  notes: string
+  custom_fields?: Record<string, string | number | boolean>
+}
+
+//////// Medical History stuff
+export interface IMedicalHistory {
+  id: number
+  client_id: number
+  created_at?: string
+  updated_at?: string
+  custom_fields?: Record<string, string | number | boolean>
+}
+
+//////// TCM stuff
+export interface ITcm {
+  id: number
+  client_id: number
+  created_at?: string
+  updated_at?: string
+  custom_fields?: Record<string, string | number | boolean>
+}
+
+//////// Treatments stuff
+export interface ITreatment {
+  id: number
+  client_id: number
+  created_at?: string
+  updated_at?: string
+  date: string
+  duration_minutes: number
+  notes: string
+  custom_fields?: Record<string, string | number | boolean>
+}
+
+//////// Appointments stuff
+export interface IAppointment {
+  id: number
+  client_id: number
+  created_at?: string
+  updated_at?: string
+  start_time: string
+  end_time: string
+  appointment_type: string
+  notes: string
+  custom_fields?: Record<string, string | number | boolean>
+}
+
+//////// Edit Form stuff
+export interface IForm {
+  id: string
+  custom_fields?: Record<string, string | number | boolean>
+}
+
+/////// Calendar stuff
 export interface ICategory {
-  _id: string;
-  title: string;
-  color?: string;
+  _id: string
+  title: string
+  color?: string
 }
 
 export interface IAppointmentInfo extends Event {
-  _id: string;
-  notes?: string;
-  categoryId?: string;
+  _id: string
+  notes?: string
+  categoryId?: string
 }
 
-// export interface AppointmentFormData {
-//   notes?: string;
-//   categoryId?: string;
-// }
-
 export interface DatePickerAppointmentFormData {
-  client: string;
-  categoryId?: string;
-  allDay: boolean;
-  start?: Date;
-  end?: Date;
-  notes?: string;
+  client: string
+  categoryId?: string
+  allDay: boolean
+  start?: Date
+  end?: Date
+  notes?: string
 }
