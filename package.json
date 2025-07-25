@@ -14,6 +14,7 @@
     "preview": "vite preview",
     "start": "node dist/server.js",
     "migrate": "tsx server/database/scripts/migrate.ts",
+    "drop-all-tables": "tsx server/database/scripts/dropAllTables.ts",
     "test": "vitest"
   },
   "dependencies": {
