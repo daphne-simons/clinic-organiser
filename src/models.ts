@@ -1,5 +1,8 @@
 import type { Event } from "react-big-calendar"
 
+// Custom Object interface
+type CustomObject = Record<string, string | number | boolean>
+
 //////// Client stuff
 export interface IClient {
   id: number
@@ -8,19 +11,9 @@ export interface IClient {
   first_name: string
   last_name: string
   dob: string
-  gender: string
-  occupation: string
   mobile: string
   email: string
-  address: string
-  emergency_contact_name: string
-  emergency_contact_number: string
-  emergency_contact_relationship: string
-  gp: string
-  referred_by: string
-  previously_received_acupuncture: string
-  notes: string
-  custom_fields?: Record<string, string | number | boolean>
+  custom_fields?: Record<string, string | number | boolean | CustomObject>
 }
 
 //////// Medical History stuff

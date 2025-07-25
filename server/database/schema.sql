@@ -7,18 +7,8 @@ CREATE TABLE clients (
   first_name VARCHAR(100) NOT NULL,
   last_name VARCHAR(100) NOT NULL,
   dob DATE,
-  gender VARCHAR(20),
-  occupation VARCHAR(100),
   mobile VARCHAR(20),
   email VARCHAR(100) UNIQUE,
-  address TEXT,
-  emergency_contact_name VARCHAR(100),
-  emergency_contact_number VARCHAR(20),
-  emergency_contact_relationship VARCHAR(50),
-  gp VARCHAR(100),
-  referred_by VARCHAR(100),
-  previously_received_acupuncture VARCHAR(10),
-  notes TEXT,
   custom_fields JSONB DEFAULT '{}'
 );
 

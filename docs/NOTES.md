@@ -18,3 +18,7 @@ QUESTION:
 
 How the heck do we test a postgres database??? Is it in memory? lolll 
 
+STACK / TECH DECISIONS: 
+
+- NO REACT ROUTER -FUCK THAT
+- YES to Electron babyyyy
