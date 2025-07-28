@@ -1,11 +1,11 @@
 import './App.css'
-import { AppointmentCalendar } from './components/AppointmentCalendar'
+import Layout from './components/Layout'
 
 function App() {
 
   return (
     <>
-      <AppointmentCalendar />
+      <Layout/>
     </>
   )
 }
