@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, type Dispatch, type SetStateAction } from "react";
 import {
   Box,
   Button,
@@ -26,8 +26,12 @@ import AppointmentInfoModal from "./AppointmentInfoModal";
 import { AddCategoryModal } from "./AddCategoryModal";
 import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal";
 import { localizer } from "../localizer";
+import type { View } from "./Layout";
 
-export function AppointmentCalendar() {
+interface Props {
+  setView: Dispatch<SetStateAction<View>>
+}
+export function AppointmentCalendar({setView}: Props) { 
   const [date, setDate] = useState(new Date());
   const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
     client: "",
@@ -37,7 +41,7 @@ export function AppointmentCalendar() {
     end: undefined,
     notes: "",
   };
-
+console.log("cal:", setView);
   const categoriesTemp = [
     //TODO API
     {
@@ -154,6 +158,7 @@ export function AppointmentCalendar() {
               handleClose={() => setAppointmentInfoModal(false)}
               onDeleteAppointment={onDeleteAppointment}
               currentAppointment={currentAppointment as IAppointmentInfo}
+              setView={setView}
             />
             <AddCategoryModal
               open={openCategoryModal}

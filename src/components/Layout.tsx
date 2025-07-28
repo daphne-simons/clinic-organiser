@@ -22,9 +22,9 @@ export default function Layout() {
       <Header />
       <ViewsNav {...{setView}}/>
       { view.component === 'welcome' && <Welcome {...view.props} /> }
-      { view.component === 'appointmentCalendar' && <AppointmentCalendar {...view.props} /> }
-      { view.component === 'clients' && <ClientsView {...view.props} /> }
-      { view.component === 'clinic' && <ClinicView {...view.props} /> }
+      { view.component === 'appointmentCalendar' && <AppointmentCalendar {...{view, setView}} /> }
+      { view.component === 'clients' && <ClientsView {...{view, setView}} /> }
+      { view.component === 'clinic' && <ClinicView {...{view, setView}} /> }
       <Footer />
     </div>
   )
