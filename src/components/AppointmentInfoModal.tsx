@@ -24,14 +24,13 @@ function AppointmentInfoModal({
   open,
   handleClose,
   onDeleteAppointment,
-  currentAppointment,
+  // currentAppointment,
   setView,
 }: IProps) {
   // TODO: Add an update functionality in this
   function onClose() {
     handleClose()
   }
-  console.log("ca:", setView)
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Appointment Info</DialogTitle>
@@ -49,9 +48,9 @@ function AppointmentInfoModal({
         <Button
           onClick={() =>
             setView(() => ({
-              component: "clients",
+              mainTab: "clients",
+              subTab: "treatments",
               props: {
-                innerComponent: "Appointments",
                 text: "hi Daph",
               },
             }))

@@ -5,24 +5,24 @@ interface IProps {
   setView: Dispatch<SetStateAction<View>>
 }
 
-export default function ViewsNav(props: IProps) {
+export default function MainTabsNav(props: IProps) {
   const { setView } = props
   return (
     <nav>
       <button
         onClick={() => {
-          setView(() => ({component: "appointmentCalendar", props:{}}))
+          setView(() => ({mainTab: "appointments", subTab: null, props:{}}))
         }}
       >
         Calendar
       </button>
       <button
               onClick={() => {
-          setView(() => ({component: "clients", props:{}}))
+          setView(() => ({mainTab: "clients", subTab: null, props:{}}))
         }}>Clients</button>
       <button
               onClick={() => {
-          setView(() => ({component: "clinic", props:{}}))
+          setView(() => ({mainTab: "clinic", subTab: null, props:{}}))
         }}>Clinic</button>
     </nav>
   )

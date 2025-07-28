@@ -7,7 +7,6 @@ import type { EventProps } from "react-big-calendar";
 // }
 
 const AppointmentInfo = ({ event }: EventProps<IAppointmentInfo>) => {
-  console.log(event);
 
   return (
     <>
