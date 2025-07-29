@@ -16,6 +16,11 @@ export interface IClient {
   custom_fields?: Record<string, string | number | boolean | CustomObject>
 }
 
+export interface IClientForDropdown {
+  id: number
+  label: string
+}
+
 //////// Medical History stuff
 export interface IMedicalHistory {
   id: number
