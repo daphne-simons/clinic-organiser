@@ -31,7 +31,7 @@ import type { View } from "./Layout";
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
-export function AppointmentCalendar({setView}: Props) { 
+export function AppointmentCalendar({ setView }: Props) {
   const [date, setDate] = useState(new Date());
   const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
     client: "",
@@ -41,7 +41,7 @@ export function AppointmentCalendar({setView}: Props) {
     end: undefined,
     notes: "",
   };
-console.log("cal:", setView);
+  console.log("cal:", setView);
   const categoriesTemp = [
     //TODO API
     {
