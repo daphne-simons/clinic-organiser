@@ -1,7 +1,6 @@
 import pool from '../config/connection';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-// import path from 'node:path';
 
 const __dirname = new URL('.', import.meta.url).pathname
 
