@@ -55,3 +55,9 @@ CREATE TABLE forms (
   id VARCHAR(50) PRIMARY KEY,
   custom_fields JSONB DEFAULT '{}'
 )
+
+CREATE TABLE categories (
+  id VARCHAR(50) PRIMARY KEY,
+  title: VARCHAR(50),
+  color: VARCHAR(50)
+)
