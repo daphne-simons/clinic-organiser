@@ -41,3 +41,6 @@ INSERT INTO forms (id, custom_fields) VALUES
 
 -- TODO: add other tables for attachments and communications. 
 
+INSERT INTO categories (id, title, color) VALUES 
+(1, 'ACC', 'blue'),
+(2, 'Private', 'green');
