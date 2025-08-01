@@ -61,17 +61,14 @@ export function AppointmentCalendar({ setView }: Props) {
       initialDatePickerAppointmentFormData
     )
   const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
-  // const [categories, setCategories] = useState<ICategory[]>(categoriesTemp);
 
   // Queries
-
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: () => getCategories(),
   })
 
   // Form Data
-
   function handleSelectSlot(appointment: Event) {
     setOpenDatepickerModal(true)
     setCurrentAppointment(appointment)

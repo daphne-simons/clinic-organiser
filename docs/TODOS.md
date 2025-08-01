@@ -1,10 +1,8 @@
 # TODOS / NOTES
 
 TODO: 
-
-- New table for categories- user is able to make new ones, so they should be stored in the db, AND they should connected to the appointments> appointment_type field
-
-- Change category to appointment type on the front end (this is what the database is calling it)
+- When deleting a category that has appointments associated to it, it makes the appointment default go to another existing category. We need to handle this possibility. Give it a default category. 
+Do we even need that functionality? 
 
 - Think of where to deploy database - Railway??? 
 

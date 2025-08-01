@@ -102,7 +102,7 @@ export default function AddDatePickerAppointmentModal({
 
     const newAppointment: IAppointmentInfo = {
       ...formData,
-      _id: generateId(),
+      _id: +generateId(),
       start: setMinToZero(formData.start),
       end: formData.allDay
         ? addHours(formData.start, 12)
