@@ -10,7 +10,10 @@ const AppointmentInfo = ({ event }: EventProps<IAppointmentInfo>) => {
 
   return (
     <>
+      {/* TODO: replace with client name once got db join */}
+      <Typography>{event.clientId}</Typography>
       <Typography>{event.notes}</Typography>
+
     </>
   );
 };

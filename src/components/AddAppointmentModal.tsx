@@ -24,41 +24,40 @@ import {
   DatePicker,
   TimePicker,
 } from "@mui/x-date-pickers"
-import type { DatePickerAppointmentFormData, IAppointmentInfo, ICategory } from "../models"
+import type { AppointmentFormData, IAppointmentInfo, ICategory } from "../models"
 import { getAllClientNames } from "../apis/clients"
 import { useQuery } from "@tanstack/react-query"
-import { generateId } from "../utils"
+// import { generateId } from "../utils"
 
 interface IProps {
   open: boolean
   handleClose: Dispatch<SetStateAction<void>>
-  datePickerAppointmentFormData: DatePickerAppointmentFormData
-  setDatePickerAppointmentFormData: Dispatch<
-    SetStateAction<DatePickerAppointmentFormData>
+  appointmentFormData: AppointmentFormData
+  setAppointmentFormData: Dispatch<
+    SetStateAction<AppointmentFormData>
   >
   onAddAppointment: (appointment: IAppointmentInfo) => void
   categories: ICategory[]
 }
 
 /////////////////////////////////////////////////////////////////////////////
-export default function AddDatePickerAppointmentModal({
+export default function AddAppointmentModal({
   open,
   handleClose,
   onAddAppointment,
   categories,
 }: IProps) {
 
-  const initialFormData: DatePickerAppointmentFormData = {
-    client: "",
+  const initialFormData: AppointmentFormData = {
+    clientId: undefined,
     categoryId: undefined,
-    allDay: false,
-    start: undefined,
-    end: undefined,
-    notes: "",
+    startTime: undefined,
+    endTime: undefined,
+    notes: undefined,
   };
 
   const [formData, setFormData] =
-    useState<DatePickerAppointmentFormData>(
+    useState<AppointmentFormData>(
       initialFormData
     );
 
@@ -89,24 +88,11 @@ export default function AddDatePickerAppointmentModal({
   function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
 
-    const addHours = (date: Date | undefined, hours: number) => {
-      return date ? date.setHours(date.getHours() + hours) : undefined;
-    };
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const setMinToZero = (date: any) => {
-      date.setSeconds(0);
-
-      return date;
-    };
-
     const newAppointment: IAppointmentInfo = {
       ...formData,
-      _id: +generateId(),
-      start: setMinToZero(formData.start),
-      end: formData.allDay
-        ? addHours(formData.start, 12)
-        : setMinToZero(formData.end),
+      clientId: formData.clientId,
+      startTime: formData.startTime,
+      endTime: formData.endTime,
       notes: formData.notes,
     }
 

@@ -1,6 +1,27 @@
 # TODOS / NOTES
 
-TODO: 
+TODO:
+
+BEFORE
+
+allDay: false
+categoryId: 3
+client: "Ron Zertnert"
+end: Fri Aug 01 2025 01:00:00 GMT+1200 (New Zealand Standard Time)
+notes: "ss"
+start: Fri Aug 01 2025 00:00:00 GMT+1200 (New Zealand Standard Time)
+_id: 4983
+
+AFTER: 
+
+id: 4983
+clientId: 2 // use this to get client deets - JOIN!!!!
+startTime: Fri Aug 01 2025 01:00:00 GMT+1200 (New Zealand Standard Time)
+endTime: Fri Aug 01 2025 00:00:00 GMT+1200 (New Zealand Standard Time)
+appointmentType: "ACC
+notes: "normal note"
+
+
 - When deleting a category that has appointments associated to it, it makes the appointment default go to another existing category. We need to handle this possibility. Give it a default category. 
 Do we even need that functionality? 
 

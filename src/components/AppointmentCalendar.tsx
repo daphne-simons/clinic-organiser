@@ -20,7 +20,7 @@ import { Calendar } from "react-big-calendar"
 import type { Event } from "react-big-calendar"
 import type {
   IAppointmentInfo,
-  DatePickerAppointmentFormData,
+  AppointmentFormData,
 } from "../models"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
@@ -28,7 +28,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 import AppointmentInfo from "./AppointmentInfo"
 import AppointmentInfoModal from "./AppointmentInfoModal"
 import { AddCategoryModal } from "./AddCategoryModal"
-import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal"
+import AddAppointmentModal from "./AddAppointmentModal"
 import { localizer } from "../localizer"
 import type { View } from "./Layout"
 import { useQuery } from "@tanstack/react-query"
@@ -39,7 +39,7 @@ interface Props {
 }
 export function AppointmentCalendar({ setView }: Props) {
   const [date, setDate] = useState(new Date())
-  const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
+  const initialAppointmentFormData: AppointmentFormData = {
     client: "",
     categoryId: undefined,
     allDay: false,
@@ -49,16 +49,15 @@ export function AppointmentCalendar({ setView }: Props) {
   }
 
   // States
-  const [openDatepickerModal, setOpenDatepickerModal] = useState(false)
+  const [openAppointmentModal, setOpenAppointmentModal] = useState(false)
   const [openCategoryModal, setOpenCategoryModal] = useState(false)
   const [appointmentInfoModal, setAppointmentInfoModal] = useState(false)
-
   const [currentAppointment, setCurrentAppointment] = useState<
     Event | IAppointmentInfo | null
   >(null)
-  const [datePickerAppointmentFormData, setDatePickerAppointmentFormData] =
-    useState<DatePickerAppointmentFormData>(
-      initialDatePickerAppointmentFormData
+  const [appointmentFormData, setAppointmentFormData] =
+    useState<AppointmentFormData>(
+      initialAppointmentFormData
     )
   const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
 
@@ -70,7 +69,7 @@ export function AppointmentCalendar({ setView }: Props) {
 
   // Form Data
   function handleSelectSlot(appointment: Event) {
-    setOpenDatepickerModal(true)
+    setOpenAppointmentModal(true)
     setCurrentAppointment(appointment)
   }
 
@@ -80,8 +79,8 @@ export function AppointmentCalendar({ setView }: Props) {
   }
 
   function handleDatePickerClose() {
-    setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData)
-    setOpenDatepickerModal(false)
+    setAppointmentFormData(initialAppointmentFormData)
+    setOpenAppointmentModal(false)
   }
 
   function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
@@ -89,17 +88,20 @@ export function AppointmentCalendar({ setView }: Props) {
   }
 
   function onDeleteAppointment() {
-    setAppointments(() =>
-      [...appointments].filter(
-        (e) => e._id !== (currentAppointment as IAppointmentInfo)._id!
-      )
-    )
+    // TODO - replace with useMutation
+    // setAppointments(() =>
+    //   [...appointments].filter(
+    //     (e) => e.id !== (currentAppointment as IAppointmentInfo).id!
+    //   )
+    // )
     setAppointmentInfoModal(false)
   }
 
   const onNavigate = useCallback((newDate: Date) => {
     setDate(newDate)
   }, [])
+
+  console.log("appointments", appointments);
 
   return (
     <Box
@@ -123,7 +125,7 @@ export function AppointmentCalendar({ setView }: Props) {
                 aria-label="outlined primary button group"
               >
                 <Button
-                  onClick={() => setOpenDatepickerModal(true)}
+                  onClick={() => setOpenAppointmentModal(true)}
                   size="small"
                   variant="contained"
                 >
@@ -140,12 +142,12 @@ export function AppointmentCalendar({ setView }: Props) {
             </Box>
             <Divider style={{ margin: 10 }} />
 
-            <AddDatePickerAppointmentModal
-              open={openDatepickerModal}
+            <AddAppointmentModal
+              open={openAppointmentModal}
               handleClose={handleDatePickerClose}
-              datePickerAppointmentFormData={datePickerAppointmentFormData}
-              setDatePickerAppointmentFormData={
-                setDatePickerAppointmentFormData
+              appointmentFormData={appointmentFormData}
+              setAppointmentFormData={
+                setAppointmentFormData
               }
               onAddAppointment={onAddAppointmentFromDatePicker}
               categories={categories || []}

@@ -54,14 +54,14 @@ export interface ITreatment {
 //////// Appointments stuff
 export interface IAppointment {
   id: number
-  client_id: number
+  clientId: number
   created_at?: string
   updated_at?: string
-  start_time: string
-  end_time: string
-  appointment_type: number
+  startTime: string
+  endTime: string
+  appointmentType: number
   notes: string
-  custom_fields?: Record<string, string | number | boolean>
+  customFields?: Record<string, string | number | boolean>
 }
 
 //////// Edit Form stuff
@@ -82,16 +82,17 @@ export interface ICategoryDraft {
 }
 
 export interface IAppointmentInfo extends Event {
-  _id: number
+  clientId?: number
+  startTime?: Date
+  endTime?: Date
   notes?: string
   categoryId?: number
 }
 
-export interface DatePickerAppointmentFormData {
-  client: string
+export interface AppointmentFormData {
+  clientId?: number
   categoryId?: number
-  allDay: boolean
-  start?: Date
-  end?: Date
+  startTime?: Date
+  endTime?: Date
   notes?: string
 }
