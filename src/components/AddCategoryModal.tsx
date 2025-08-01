@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
+import { useState } from "react"
+import type { Dispatch, SetStateAction } from "react"
 import {
   Dialog,
   DialogActions,
@@ -14,47 +14,53 @@ import {
   ListItem,
   ListItemText,
   TextField,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
+} from "@mui/material"
+import DeleteIcon from "@mui/icons-material/Delete"
 
-import { HexColorPicker } from "react-colorful";
-import { type ICategory } from "../models";
-import { generateId } from "../utils";
+import { HexColorPicker } from "react-colorful"
+import { type ICategory } from "../models"
+import { addCategory, deleteCategory } from "../apis/categories"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 interface IProps {
-  open: boolean;
-  handleClose: Dispatch<SetStateAction<void>>;
-  categories: ICategory[];
-  setCategories: Dispatch<SetStateAction<ICategory[]>>;
+  open: boolean
+  handleClose: Dispatch<SetStateAction<void>>
+  categories: ICategory[]
 }
 
-export function AddCategoryModal({
-  open,
-  handleClose,
-  categories,
-  setCategories,
-}: IProps) {
-  const [color, setColor] = useState("#b32aa9");
-  const [title, setTitle] = useState("");
+export function AddCategoryModal({ open, handleClose, categories }: IProps) {
+  const [color, setColor] = useState("#b32aa9")
+  const [title, setTitle] = useState("")
+
+  // mutations
+  const queryClient = useQueryClient()
+  const addMutation = useMutation({
+    mutationFn: addCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] })
+    },
+  })
+   const deleteMutation = useMutation({
+    mutationFn: deleteCategory,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] })
+    },
+  })
 
   function onAddCategory() {
-    setTitle("");
-    setCategories([
-      ...categories,
-      {
-        _id: generateId(),
-        color,
-        title,
-      },
-    ]);
+    setTitle("")
+    addMutation.mutate({
+      color,
+      title,
+    })
   }
 
-  function onDeleteCategory(_id: string) {
-    setCategories(categories.filter((category) => category._id !== _id));
+  function onDeleteCategory(_id: number) {
+    deleteMutation.mutate(_id)
   }
 
   function onClose() {
-    handleClose();
+    handleClose()
   }
 
   return (
@@ -77,7 +83,7 @@ export function AddCategoryModal({
             required
             variant="outlined"
             onChange={(e) => {
-              setTitle(e.target.value);
+              setTitle(e.target.value)
             }}
             value={title}
           />
@@ -142,5 +148,5 @@ export function AddCategoryModal({
         </Button>
       </DialogActions>
     </Dialog>
-  );
+  )
 }

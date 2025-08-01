@@ -1,4 +1,9 @@
-import { useCallback, useState, type Dispatch, type SetStateAction } from "react";
+import {
+  useCallback,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react"
 import {
   Box,
   Button,
@@ -8,31 +13,32 @@ import {
   CardHeader,
   Container,
   Divider,
-} from "@mui/material";
+} from "@mui/material"
 
-import { Calendar } from "react-big-calendar";
+import { Calendar } from "react-big-calendar"
 
-import type { Event } from "react-big-calendar";
+import type { Event } from "react-big-calendar"
 import type {
-  ICategory,
   IAppointmentInfo,
   DatePickerAppointmentFormData,
-} from "../models";
+} from "../models"
 
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/css/react-big-calendar.css"
 
-import AppointmentInfo from "./AppointmentInfo";
-import AppointmentInfoModal from "./AppointmentInfoModal";
-import { AddCategoryModal } from "./AddCategoryModal";
-import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal";
-import { localizer } from "../localizer";
-import type { View } from "./Layout";
+import AppointmentInfo from "./AppointmentInfo"
+import AppointmentInfoModal from "./AppointmentInfoModal"
+import { AddCategoryModal } from "./AddCategoryModal"
+import AddDatePickerAppointmentModal from "./AddDatePickerAppointmentModal"
+import { localizer } from "../localizer"
+import type { View } from "./Layout"
+import { useQuery } from "@tanstack/react-query"
+import { getCategories } from "../apis/categories"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
 export function AppointmentCalendar({ setView }: Props) {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date())
   const initialDatePickerAppointmentFormData: DatePickerAppointmentFormData = {
     client: "",
     categoryId: undefined,
@@ -40,55 +46,49 @@ export function AppointmentCalendar({ setView }: Props) {
     start: undefined,
     end: undefined,
     notes: "",
-  };
-  console.log("cal:", setView);
-  const categoriesTemp = [
-    //TODO API
-    {
-      _id: "1",
-      title: "ACC",
-      color: "blue",
-    },
-    {
-      _id: "2",
-      title: "Private",
-      color: "green",
-    },
-  ];
+  }
+
   // States
-  const [openDatepickerModal, setOpenDatepickerModal] = useState(false);
-  const [openCategoryModal, setOpenCategoryModal] = useState(false);
-  const [appointmentInfoModal, setAppointmentInfoModal] = useState(false);
+  const [openDatepickerModal, setOpenDatepickerModal] = useState(false)
+  const [openCategoryModal, setOpenCategoryModal] = useState(false)
+  const [appointmentInfoModal, setAppointmentInfoModal] = useState(false)
 
   const [currentAppointment, setCurrentAppointment] = useState<
     Event | IAppointmentInfo | null
-  >(null);
+  >(null)
   const [datePickerAppointmentFormData, setDatePickerAppointmentFormData] =
     useState<DatePickerAppointmentFormData>(
       initialDatePickerAppointmentFormData
-    );
-  const [appointments, setAppointments] = useState<IAppointmentInfo[]>([]);
-  const [categories, setCategories] = useState<ICategory[]>(categoriesTemp);
+    )
+  const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
+  // const [categories, setCategories] = useState<ICategory[]>(categoriesTemp);
+
+  // Queries
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories(),
+  })
 
   // Form Data
 
   function handleSelectSlot(appointment: Event) {
-    setOpenDatepickerModal(true);
-    setCurrentAppointment(appointment);
+    setOpenDatepickerModal(true)
+    setCurrentAppointment(appointment)
   }
 
   function handleSelectAppointment(appointment: IAppointmentInfo) {
-    setCurrentAppointment(appointment);
-    setAppointmentInfoModal(true);
+    setCurrentAppointment(appointment)
+    setAppointmentInfoModal(true)
   }
 
   function handleDatePickerClose() {
-    setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData);
-    setOpenDatepickerModal(false);
+    setDatePickerAppointmentFormData(initialDatePickerAppointmentFormData)
+    setOpenDatepickerModal(false)
   }
 
   function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
-    setAppointments([...appointments, appointment]);
+    setAppointments([...appointments, appointment])
   }
 
   function onDeleteAppointment() {
@@ -96,13 +96,13 @@ export function AppointmentCalendar({ setView }: Props) {
       [...appointments].filter(
         (e) => e._id !== (currentAppointment as IAppointmentInfo)._id!
       )
-    );
-    setAppointmentInfoModal(false);
+    )
+    setAppointmentInfoModal(false)
   }
 
   const onNavigate = useCallback((newDate: Date) => {
-    setDate(newDate);
-  }, []);
+    setDate(newDate)
+  }, [])
 
   return (
     <Box
@@ -151,7 +151,7 @@ export function AppointmentCalendar({ setView }: Props) {
                 setDatePickerAppointmentFormData
               }
               onAddAppointment={onAddAppointmentFromDatePicker}
-              categories={categories}
+              categories={categories || []}
             />
             <AppointmentInfoModal
               open={appointmentInfoModal}
@@ -163,8 +163,7 @@ export function AppointmentCalendar({ setView }: Props) {
             <AddCategoryModal
               open={openCategoryModal}
               handleClose={() => setOpenCategoryModal(false)}
-              categories={categories}
-              setCategories={setCategories}
+              categories={categories || []}
             />
             <Calendar
               date={date}
@@ -180,9 +179,9 @@ export function AppointmentCalendar({ setView }: Props) {
               defaultView="week"
               views={["week"]}
               eventPropGetter={(appointment) => {
-                const hasCategory = categories.find(
+                const hasCategory = categories?.find(
                   (category) => category._id === appointment.categoryId
-                );
+                )
                 return {
                   style: {
                     backgroundColor: hasCategory
@@ -190,7 +189,7 @@ export function AppointmentCalendar({ setView }: Props) {
                       : "#b64fc8",
                     borderColor: hasCategory ? hasCategory.color : "#b64fc8",
                   },
-                };
+                }
               }}
               style={{
                 height: 900,
@@ -200,5 +199,5 @@ export function AppointmentCalendar({ setView }: Props) {
         </Card>
       </Container>
     </Box>
-  );
+  )
 }

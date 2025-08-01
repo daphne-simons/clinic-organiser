@@ -23,6 +23,17 @@ router.post('/', async (req, res) => {
   }
 })
 
+router.delete('/:id', async (req, res) => {
+  const {id} = req.params
+  try {
+    await pool.query('DELETE FROM categories WHERE id = ($1)', [id])
+    res.sendStatus(204)
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
+})
+
 
 export default router
 

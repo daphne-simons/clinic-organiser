@@ -1,22 +1,15 @@
-import type { ICategory } from "../models";
+import request from "superagent"
+import type { ICategory, ICategoryDraft } from "../models"
 
-export function getCategories(): ICategory[] {
-  //TODO: GET from db
-  return [
-    {
-      _id: "1",
-      title: "ACC",
-      color: "blue",
-    },
-    {
-      _id: "2",
-      title: "Private",
-      color: "green",
-    },
-  ];
+export async function getCategories() {
+  const data = await request.get("http://localhost:3000/api/v1/categories/")
+  return data.body as ICategory[]
 }
 
-export function addCategory(category: ICategory) {
-  // TODO: POST to db
-  console.log(category); 
+export async function addCategory(category: ICategoryDraft) {
+  await request.post("http://localhost:3000/api/v1/categories/").send(category)
+}
+
+export async function deleteCategory(id: number) {
+  await request.delete(`http://localhost:3000/api/v1/categories/${id}`)
 }

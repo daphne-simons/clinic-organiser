@@ -72,7 +72,11 @@ export interface IForm {
 
 /////// Calendar stuff
 export interface ICategory {
-  _id: string
+  _id: number
+  title: string
+  color?: string
+}
+export interface ICategoryDraft {
   title: string
   color?: string
 }
