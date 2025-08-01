@@ -3,6 +3,7 @@ dotenv.config()
 import express from 'express'
 import * as Path from 'node:path'
 import clientsRoutes from './routes/clients'
+import categoriesRoutes from './routes/categories'
 import cors from 'cors' // Import the cors middleware
 
 // routes go here
@@ -15,6 +16,7 @@ server.use(cors({
 }))
 // connect to routes clients file" 
 server.use('/api/v1/clients', clientsRoutes)
+server.use('/api/v1/categories', categoriesRoutes)
 
 if (process.env.NODE_ENV === 'production') {
   server.use(express.static(Path.resolve('public')))
