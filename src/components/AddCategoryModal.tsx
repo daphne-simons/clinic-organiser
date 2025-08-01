@@ -40,7 +40,7 @@ export function AddCategoryModal({ open, handleClose, categories }: IProps) {
       queryClient.invalidateQueries({ queryKey: ["categories"] })
     },
   })
-   const deleteMutation = useMutation({
+  const deleteMutation = useMutation({
     mutationFn: deleteCategory,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] })

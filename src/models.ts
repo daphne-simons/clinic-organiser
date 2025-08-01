@@ -59,7 +59,7 @@ export interface IAppointment {
   updated_at?: string
   start_time: string
   end_time: string
-  appointment_type: string
+  appointment_type: number
   notes: string
   custom_fields?: Record<string, string | number | boolean>
 }
@@ -82,14 +82,14 @@ export interface ICategoryDraft {
 }
 
 export interface IAppointmentInfo extends Event {
-  _id: string
+  _id: number
   notes?: string
-  categoryId?: string
+  categoryId?: number
 }
 
 export interface DatePickerAppointmentFormData {
   client: string
-  categoryId?: string
+  categoryId?: number
   allDay: boolean
   start?: Date
   end?: Date
