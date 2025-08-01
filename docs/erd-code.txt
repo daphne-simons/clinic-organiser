@@ -54,6 +54,14 @@ Table forms {
   custom_fields jsonb [default: `{}`]
 }
 
+// Populates the drop down for creating appointment modal.
+// When adding a new category. 
+Table categories {
+  id serial [primary key]
+  title varchar(50)
+  color varchar(50)
+}
+
 Ref: medical_history.client_id - clients.id [delete: cascade]
 Ref: tcm.client_id - clients.id [delete: cascade]
 Ref: treatments.client_id - clients.id [delete: cascade]

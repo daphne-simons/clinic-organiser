@@ -2,9 +2,7 @@
 
 TODO: 
 
-- New table for categories- user is able to make new ones, so they should be stored in the db, AND they should connected to the appointments> appointment_type field
-
-- Change category to appointment type on the front end (this is what the database is calling it)
+- New table for categories - user is able to make new ones, so they should be stored in the db, AND they should connected to the appointments> appointment_type field
 
 - Think of where to deploy database - Railway??? 
 
