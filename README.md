@@ -2,23 +2,36 @@
 
 Prototype for an acupuncture clinic management system with scheduling, client records, treatment notes, and body chart annotations. 
 
-## Frontend:
+## Scripts: 
+
+- `npm run dev` for local development
+- `npm run build` for production build
+- `npm run preview` for local preview
+- `npm run start` for production start
+- `npm run drop-all-tables` for dropping all tables
+- `npm run migrate` for database migrations
+- `npm run seed` for database seeding
+- `npm run test` for testing (currently only puppeteer)
+
+## Stack Overview: 
+
+### Frontend:
 - React + TypeScript 
 - Material UI for rapid UI development
 - React Query (TanStack Query) for data fetching/caching
 - Fabric.js or Konva.js for body chart drawing functionality
 - Electron js
 
-## Backend:
+### Backend:
 - Node.js + Express 
 - PostgreSQL for db
 - SQL for querying 
 - Multer for file uploads
 - Sharp for image processing/optimization
 
-## File Storage:
+### File Storage:
 - AWS S3 or Cloudinary for images/documents (body charts, x-rays, reports)
 
-## Deployment: 
+### Deployment: 
 - Database on Railway
 - a downloadable executable file with Electron 
