@@ -72,20 +72,22 @@ export interface ICategoryDraft {
 
 //////// Appointments stuff
 
-export interface IAppointmentInfo extends Event {
+
+export interface AppointmentFormData {
   clientId?: number
   startTime?: Date
   endTime?: Date
   notes?: string
   categoryId?: number
 }
-
-export interface AppointmentFormData {
+export interface IAppointmentInfo extends Event {
+  id?: number
   clientId?: number
-  categoryId?: number
   startTime?: Date
   endTime?: Date
   notes?: string
+  categoryId?: number
+  customFields?: Record<string, string | number | boolean>
 }
 
 export interface IAppointmentAPI {

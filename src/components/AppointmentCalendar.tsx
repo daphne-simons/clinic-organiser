@@ -33,10 +33,12 @@ import { localizer } from "../localizer"
 import type { View } from "./Layout"
 import { useQuery } from "@tanstack/react-query"
 import { getCategories } from "../apis/categories"
+import { getAppointments, updateAppointment, deleteAppointment, addAppointment } from "../apis/appointments"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
+
 export function AppointmentCalendar({ setView }: Props) {
   const [date, setDate] = useState(new Date())
   const initialAppointmentFormData: AppointmentFormData = {
@@ -61,8 +63,13 @@ export function AppointmentCalendar({ setView }: Props) {
       initialAppointmentFormData
     )
   // TODO - update for appointments useQuery
-  const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
+  // const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
+  const { data: appointments } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: () => getAppointments(),
+  })
 
+  if (appointments) console.log('api', appointments)
   // Queries
   const { data: categories } = useQuery({
     queryKey: ["categories"],
@@ -88,9 +95,9 @@ export function AppointmentCalendar({ setView }: Props) {
   }
 
   // TODO - replace with useMutation
-  function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
-    setAppointments([...appointments, appointment])
-  }
+  // function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
+  //   setAppointments([...appointments, appointment])
+  // }
 
   function onDeleteAppointment() {
     // TODO - replace with useMutation
@@ -105,8 +112,6 @@ export function AppointmentCalendar({ setView }: Props) {
   const onNavigate = useCallback((newDate: Date) => {
     setDate(newDate)
   }, [])
-
-  console.log("appointments", appointments);
 
   return (
     <Box
@@ -154,7 +159,7 @@ export function AppointmentCalendar({ setView }: Props) {
               setAppointmentFormData={
                 setAppointmentFormData
               }
-              onAddAppointment={onAddAppointmentFromDatePicker}
+              // onAddAppointment={onAddAppointmentFromDatePicker}
               categories={categories || []}
             />
             <AppointmentInfoModal
@@ -177,9 +182,9 @@ export function AppointmentCalendar({ setView }: Props) {
               onSelectEvent={handleSelectAppointment}
               onSelectSlot={handleSelectSlot}
               selectable
-              startAccessor="start"
+              startAccessor="startTime"
+              endAccessor="endTime"
               components={{ event: AppointmentInfo }}
-              endAccessor="end"
               defaultView="week"
               views={["week"]}
               eventPropGetter={(appointment) => {
