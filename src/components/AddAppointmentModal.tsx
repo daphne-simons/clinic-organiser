@@ -26,7 +26,7 @@ import {
 import type { AppointmentFormData, IAppointmentInfo, ICategory } from "../models"
 import { getAllClientNames } from "../apis/clients"
 import { useQuery } from "@tanstack/react-query"
-import { convertNZTimeToUTC } from "../localizer"
+// import { convertNZTimeToUTC } from "../localizer"
 
 interface IProps {
   open: boolean
@@ -99,78 +99,6 @@ export default function AddAppointmentModal({
     }))
   }
 
-  // function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
-  //   e.preventDefault()
-
-  //   const newAppointment: IAppointmentInfo = {
-  //     ...formData,
-  //     clientId: formData.clientId,
-  //     startTime: formData.startTime,
-  //     endTime: formData.endTime,
-  //     notes: formData.notes,
-  //   }
-
-  //   onAddAppointment(newAppointment)
-  //   setFormData(initialFormData)
-  //   handleClose()
-  // }
-
-  // NEW HANDLE SUBMIT: 
-
-  function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault()
-
-    // Validate required fields
-    if (!formData.clientId || !formData.startTime || !formData.endTime) {
-      console.error("Missing required fields")
-      return
-    }
-
-    console.log("=== FORM SUBMISSION DEBUG ===")
-    console.log("Form data:", formData)
-
-    // Combine date and time for start
-    const startDateTime = new Date(formData.startTime)
-    startDateTime.setHours(formData.startTime.getHours())
-    startDateTime.setMinutes(formData.startTime.getMinutes())
-    startDateTime.setSeconds(0)
-    startDateTime.setMilliseconds(0)
-
-    // Combine date and time for end
-    const endDateTime = new Date(formData.startTime)
-    endDateTime.setHours(formData.endTime.getHours())
-    endDateTime.setMinutes(formData.endTime.getMinutes())
-    endDateTime.setSeconds(0)
-    endDateTime.setMilliseconds(0)
-
-    console.log("Combined NZ times:")
-    console.log("  Start (NZ):", startDateTime.toString())
-    console.log("  End (NZ):", endDateTime.toString())
-
-    // Convert NZ local time to UTC for API
-    const startTimeUTC = convertNZTimeToUTC(startDateTime)
-    const endTimeUTC = convertNZTimeToUTC(endDateTime)
-
-    console.log("Converted to UTC:")
-    console.log("  Start (UTC):", startTimeUTC.toISOString())
-    console.log("  End (UTC):", endTimeUTC.toISOString())
-
-    const newAppointment: IAppointmentInfo = {
-      clientId: formData.clientId,
-      categoryId: formData.categoryId,
-      startTime: startTimeUTC,
-      endTime: endTimeUTC,
-      notes: formData.notes,
-    }
-
-    console.log("Final appointment object:", newAppointment)
-    console.log("=== END SUBMISSION DEBUG ===")
-
-    onAddAppointment(newAppointment)
-    setFormData(initialFormData)
-    handleClose()
-  }
-
   // Handle Date change
   function handleDateChange(newValue: Date | null) {
     setFormData((prevState) => ({
@@ -224,6 +152,80 @@ export default function AddAppointmentModal({
       !formData.startTime ||
       !formData.endTime
   }
+
+  // OLD HANDLE SUBMIT
+  function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
+    e.preventDefault()
+
+    const newAppointment: IAppointmentInfo = {
+      ...formData,
+      clientId: formData.clientId,
+      startTime: formData.startTime,
+      endTime: formData.endTime,
+      notes: formData.notes,
+    }
+
+    onAddAppointment(newAppointment)
+    setFormData(initialFormData)
+    handleClose()
+  }
+
+
+  // NEWER HANDLE SUBMIT, NOT WORKING EITHER: 
+
+  // function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
+  //   e.preventDefault()
+
+  //   // Validate required fields
+  //   if (!formData.clientId || !formData.startTime || !formData.endTime) {
+  //     console.error("Missing required fields")
+  //     return
+  //   }
+
+  //   console.log("=== FORM SUBMISSION DEBUG ===")
+  //   console.log("Form data:", formData)
+
+  //   // Combine date and time for start
+  //   const startDateTime = new Date(formData.startTime)
+  //   startDateTime.setHours(formData.startTime.getHours())
+  //   startDateTime.setMinutes(formData.startTime.getMinutes())
+  //   startDateTime.setSeconds(0)
+  //   startDateTime.setMilliseconds(0)
+
+  //   // Combine date and time for end
+  //   const endDateTime = new Date(formData.startTime)
+  //   endDateTime.setHours(formData.endTime.getHours())
+  //   endDateTime.setMinutes(formData.endTime.getMinutes())
+  //   endDateTime.setSeconds(0)
+  //   endDateTime.setMilliseconds(0)
+
+  //   console.log("Combined NZ times:")
+  //   console.log("  Start (NZ):", startDateTime.toString())
+  //   console.log("  End (NZ):", endDateTime.toString())
+
+  //   // Convert NZ local time to UTC for API
+  //   const startTimeUTC = convertNZTimeToUTC(startDateTime)
+  //   const endTimeUTC = convertNZTimeToUTC(endDateTime)
+
+  //   console.log("Converted to UTC:")
+  //   console.log("  Start (UTC):", startTimeUTC.toISOString())
+  //   console.log("  End (UTC):", endTimeUTC.toISOString())
+
+  //   const newAppointment: IAppointmentInfo = {
+  //     clientId: formData.clientId,
+  //     categoryId: formData.categoryId,
+  //     startTime: startTimeUTC,
+  //     endTime: endTimeUTC,
+  //     notes: formData.notes,
+  //   }
+
+  //   console.log("Final appointment object:", newAppointment)
+  //   console.log("=== END SUBMISSION DEBUG ===")
+
+  //   onAddAppointment(newAppointment)
+  //   setFormData(initialFormData)
+  //   handleClose()
+  // }
 
   return (
     <Dialog open={open} onClose={onClose}>

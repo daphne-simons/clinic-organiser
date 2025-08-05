@@ -30,8 +30,9 @@ import AppointmentInfo from "./AppointmentInfo"
 import AppointmentInfoModal from "./AppointmentInfoModal"
 import { AddCategoryModal } from "./AddCategoryModal"
 import AddAppointmentModal from "./AddAppointmentModal"
-import { localizer, transformAppointmentsForCalendar } from "../localizer"
+// import { localizer, transformAppointmentsForCalendar } from "../localizer"
 import type { View } from "./Layout"
+import { localizer } from "../localizer"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getCategories } from "../apis/categories"
 import { getAppointments, updateAppointment, deleteAppointment, addAppointment } from "../apis/appointments"
@@ -40,9 +41,9 @@ import { fromZonedTime } from "date-fns-tz"
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
-
+// ------- COMPONENT ------ 
 export function AppointmentCalendar({ setView }: Props) {
-  const [date, setDate] = useState(new Date())
+
   const initialAppointmentFormData: AppointmentFormData = {
     clientId: undefined,
     categoryId: undefined,
@@ -51,7 +52,9 @@ export function AppointmentCalendar({ setView }: Props) {
     notes: "",
   }
 
-  // States
+  // --- STATES
+
+  const [date, setDate] = useState(new Date())
   const [openAppointmentModal, setOpenAppointmentModal] = useState(false)
   const [openCategoryModal, setOpenCategoryModal] = useState(false)
   const [appointmentInfoModal, setAppointmentInfoModal] = useState(false)
@@ -59,7 +62,6 @@ export function AppointmentCalendar({ setView }: Props) {
     Event | IAppointmentInfo | null
   >(null)
   // TODO - update for appointments useQuery
-
   const [appointmentFormData, setAppointmentFormData] =
     useState<AppointmentFormData>(
       initialAppointmentFormData
@@ -72,15 +74,15 @@ export function AppointmentCalendar({ setView }: Props) {
   })
 
   // useQuery for appointments
-  const { data: appointmentsData } = useQuery({
+  const { data: appointments } = useQuery({
     queryKey: ["appointments"],
     queryFn: () => getAppointments(),
   })
 
   // Transform appointments with proper timezone handling
-  const appointments = useMemo(() => {
-    return transformAppointmentsForCalendar(appointmentsData || [])
-  }, [appointmentsData])
+  // const appointments = useMemo(() => {
+  //   return transformAppointmentsForCalendar(appointmentsData || [])
+  // }, [appointmentsData])
 
   // --- MUTATIONS
 
@@ -164,7 +166,7 @@ export function AppointmentCalendar({ setView }: Props) {
     console.log('=== END DEBUG ===')
 
     // Don't actually mutate yet, just debug
-    // addAppointmentMutation.mutate(appointmentUTC)
+    addAppointmentMutation.mutate(appointmentUTC)
   }
 
 
