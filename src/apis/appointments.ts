@@ -14,16 +14,7 @@ export async function getAppointments() {
 }
 
 export async function addAppointment(appointment: IAppointmentInfo) {
-  // NOTE: needed to massage the data to work with the backend route. 
-  const massagedAppointment = {
-    clientId: 1, // TODO: get client id from name and replace this hardcoded value
-    startTime: appointment.start,
-    endTime: appointment.end,
-    appointmentType: "ACC", // TODO: get category description from categoryId and replace this hardcoded value
-    notes: appointment.notes,
-    customFields: appointment.customFields
-  }
-  await request.post("http://localhost:3000/api/v1/appointments/").send(massagedAppointment)
+  await request.post("http://localhost:3000/api/v1/appointments/").send(appointment)
 }
 
 export async function updateAppointment(appointment: IAppointmentInfo) {

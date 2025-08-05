@@ -17,7 +17,6 @@ import {
   Box,
   Typography,
 } from "@mui/material"
-// import { LocalizationProvider, DateTimePicker } from "@mui/x-date-pickers"
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns"
 import {
   LocalizationProvider,
@@ -27,7 +26,7 @@ import {
 import type { AppointmentFormData, IAppointmentInfo, ICategory } from "../models"
 import { getAllClientNames } from "../apis/clients"
 import { useQuery } from "@tanstack/react-query"
-// import { generateId } from "../utils"
+import { convertNZTimeToUTC } from "../localizer"
 
 interface IProps {
   open: boolean
@@ -56,15 +55,19 @@ export default function AddAppointmentModal({
     notes: undefined,
   };
 
+  // --- STATE
   const [formData, setFormData] =
     useState<AppointmentFormData>(
       initialFormData
     );
 
+  // --- QUERIES
   const { data: clients } = useQuery({
     queryKey: ["clientNamesForDropdown"],
     queryFn: () => getAllClientNames(),
   })
+
+  // --- HANDLER FUNCTIONS
   function onClose() {
     handleClose()
   }
@@ -85,16 +88,83 @@ export default function AddAppointmentModal({
     }))
   }
 
+  function handleClientChange(
+    _e: React.SyntheticEvent,
+    value: any | null
+  ) {
+    setFormData((prevState) => ({
+      ...prevState,
+      client: value?.label ?? "",
+      clientId: value?.id ?? undefined,
+    }))
+  }
+
+  // function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
+  //   e.preventDefault()
+
+  //   const newAppointment: IAppointmentInfo = {
+  //     ...formData,
+  //     clientId: formData.clientId,
+  //     startTime: formData.startTime,
+  //     endTime: formData.endTime,
+  //     notes: formData.notes,
+  //   }
+
+  //   onAddAppointment(newAppointment)
+  //   setFormData(initialFormData)
+  //   handleClose()
+  // }
+
+  // NEW HANDLE SUBMIT: 
+
   function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
     e.preventDefault()
 
+    // Validate required fields
+    if (!formData.clientId || !formData.startTime || !formData.endTime) {
+      console.error("Missing required fields")
+      return
+    }
+
+    console.log("=== FORM SUBMISSION DEBUG ===")
+    console.log("Form data:", formData)
+
+    // Combine date and time for start
+    const startDateTime = new Date(formData.startTime)
+    startDateTime.setHours(formData.startTime.getHours())
+    startDateTime.setMinutes(formData.startTime.getMinutes())
+    startDateTime.setSeconds(0)
+    startDateTime.setMilliseconds(0)
+
+    // Combine date and time for end
+    const endDateTime = new Date(formData.startTime)
+    endDateTime.setHours(formData.endTime.getHours())
+    endDateTime.setMinutes(formData.endTime.getMinutes())
+    endDateTime.setSeconds(0)
+    endDateTime.setMilliseconds(0)
+
+    console.log("Combined NZ times:")
+    console.log("  Start (NZ):", startDateTime.toString())
+    console.log("  End (NZ):", endDateTime.toString())
+
+    // Convert NZ local time to UTC for API
+    const startTimeUTC = convertNZTimeToUTC(startDateTime)
+    const endTimeUTC = convertNZTimeToUTC(endDateTime)
+
+    console.log("Converted to UTC:")
+    console.log("  Start (UTC):", startTimeUTC.toISOString())
+    console.log("  End (UTC):", endTimeUTC.toISOString())
+
     const newAppointment: IAppointmentInfo = {
-      ...formData,
       clientId: formData.clientId,
-      startTime: formData.startTime,
-      endTime: formData.endTime,
+      categoryId: formData.categoryId,
+      startTime: startTimeUTC,
+      endTime: endTimeUTC,
       notes: formData.notes,
     }
+
+    console.log("Final appointment object:", newAppointment)
+    console.log("=== END SUBMISSION DEBUG ===")
 
     onAddAppointment(newAppointment)
     setFormData(initialFormData)
@@ -106,59 +176,53 @@ export default function AddAppointmentModal({
     setFormData((prevState) => ({
       ...prevState,
       // Update both start and end dates to maintain the same date
-      start: newValue ? new Date(newValue) : undefined,
-      end:
-        newValue && prevState.end
+      startTime: newValue ? new Date(newValue) : undefined,
+      endTime:
+        newValue && prevState.endTime
           ? new Date(
             newValue.getFullYear(),
             newValue.getMonth(),
             newValue.getDate(),
-            prevState.end.getHours(),
-            prevState.end.getMinutes()
+            prevState.endTime.getHours(),
+            prevState.endTime.getMinutes()
           )
           : undefined,
     }))
   }
   // Handle start time change
   function handleStartTimeChange(newValue: Date | null) {
-    if (newValue && formData.start) {
+    if (newValue && formData.startTime) {
       // Combine the existing date with the new time
-      const updatedStart = new Date(formData.start)
+      const updatedStart = new Date(formData.startTime)
       updatedStart.setHours(newValue.getHours())
       updatedStart.setMinutes(newValue.getMinutes())
 
       setFormData((prevState) => ({
         ...prevState,
-        start: updatedStart,
+        startTime: updatedStart,
       }))
     }
   }
 
   // Handle end time change
   function handleEndTimeChange(newValue: Date | null) {
-    if (newValue && formData.start) {
+    if (newValue && formData.startTime) {
       // Combine the existing date with the new time
-      const updatedEnd = new Date(formData.start) // Use start date as base
+      const updatedEnd = new Date(formData.startTime) // Use start date as base
       updatedEnd.setHours(newValue.getHours())
       updatedEnd.setMinutes(newValue.getMinutes())
 
       setFormData((prevState) => ({
         ...prevState,
-        end: updatedEnd,
+        endTime: updatedEnd,
       }))
     }
   }
 
   function isDisabled() {
-    const checkend = () => {
-      if (!formData.allDay && formData.end === null) {
-        return true
-      }
-    }
-    if (formData.client === "" || formData.start === null || checkend()) {
-      return true
-    }
-    return false
+    return !formData.clientId ||
+      !formData.startTime ||
+      !formData.endTime
   }
 
   return (
@@ -177,12 +241,8 @@ export default function AddAppointmentModal({
             disablePortal
             options={clients || []}
             sx={{ width: 300, mb: 2, mt: 1 }}
-            onChange={(_, newValue) =>
-              setFormData((prevState) => ({
-                ...prevState,
-                client: newValue?.label ?? "", // Default value if newValue is null
-              }))
-            }
+            value={clients?.find(client => client.id === formData.clientId) || null}
+            onChange={handleClientChange}
             renderInput={(params) => (
               <TextField {...params} label="Enter client name" />
             )}
@@ -196,7 +256,7 @@ export default function AddAppointmentModal({
               </Typography>
               <DatePicker
                 label="Select date"
-                value={formData.start}
+                value={formData.startTime}
                 onChange={handleDateChange}
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 renderInput={(params: any) => (
@@ -223,7 +283,7 @@ export default function AddAppointmentModal({
               <Box>
                 <TimePicker
                   label="Start Time"
-                  value={formData.start}
+                  value={formData.startTime}
                   onChange={handleStartTimeChange}
                 />
               </Box>
@@ -235,7 +295,7 @@ export default function AddAppointmentModal({
               <Box>
                 <TimePicker
                   label="End Time"
-                  value={formData.end}
+                  value={formData.endTime}
                   onChange={handleEndTimeChange}
                 />
               </Box>
