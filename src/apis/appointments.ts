@@ -13,8 +13,19 @@ export async function getAppointments() {
   return result as IAppointmentInfo[]
 }
 
-export async function addAppointment(appointment: IAppointmentDraft) {
-  await request.post("http://localhost:3000/api/v1/appointments/").send(appointment)
+export async function addAppointment(appointment: IAppointmentInfo) {
+  // NOTE: needed to massage the data to work with the backend route. 
+  const massagedAppointment = {
+    // TODO: get client id from name
+    clientId: 1,
+    startTime: appointment.start,
+    endTime: appointment.end,
+    // TODO: get category description from categoryId
+    appointmentType: "ACC",
+    notes: appointment.notes,
+    customFields: appointment.customFields
+  }
+  await request.post("http://localhost:3000/api/v1/appointments/").send(massagedAppointment)
 }
 
 export async function updateAppointment(appointment: IAppointmentInfo) {

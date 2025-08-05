@@ -31,7 +31,7 @@ import { AddCategoryModal } from "./AddCategoryModal"
 import AddAppointmentModal from "./AddAppointmentModal"
 import { localizer } from "../localizer"
 import type { View } from "./Layout"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getCategories } from "../apis/categories"
 import { getAppointments, updateAppointment, deleteAppointment, addAppointment } from "../apis/appointments"
 
@@ -69,13 +69,23 @@ export function AppointmentCalendar({ setView }: Props) {
     queryFn: () => getAppointments(),
   })
 
-  if (appointments) console.log('api', appointments)
+
   // Queries
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: () => getCategories(),
   })
 
+  // Mutations 
+
+  const queryClient = useQueryClient()
+
+  const addAppointmentMutation = useMutation({
+    mutationFn: addAppointment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] })
+    }
+  })
   // Form Data
   function handleSelectSlot(appointment: Event) {
     setOpenAppointmentModal(true)
@@ -95,9 +105,10 @@ export function AppointmentCalendar({ setView }: Props) {
   }
 
   // TODO - replace with useMutation
-  // function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
-  //   setAppointments([...appointments, appointment])
-  // }
+  function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
+    console.log('from form submit', appointment)
+    addAppointmentMutation.mutate(appointment)
+  }
 
   function onDeleteAppointment() {
     // TODO - replace with useMutation
@@ -159,7 +170,7 @@ export function AppointmentCalendar({ setView }: Props) {
               setAppointmentFormData={
                 setAppointmentFormData
               }
-              // onAddAppointment={onAddAppointmentFromDatePicker}
+              onAddAppointment={onAddAppointmentFromDatePicker}
               categories={categories || []}
             />
             <AppointmentInfoModal

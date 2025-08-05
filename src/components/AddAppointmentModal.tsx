@@ -36,7 +36,7 @@ interface IProps {
   setAppointmentFormData: Dispatch<
     SetStateAction<AppointmentFormData>
   >
-  // onAddAppointment: (appointment: IAppointmentInfo) => void
+  onAddAppointment: (appointment: IAppointmentInfo) => void
   categories: ICategory[]
 }
 
@@ -44,7 +44,7 @@ interface IProps {
 export default function AddAppointmentModal({
   open,
   handleClose,
-  // onAddAppointment,
+  onAddAppointment,
   categories,
 }: IProps) {
 
