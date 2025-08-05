@@ -40,11 +40,10 @@ interface Props {
 export function AppointmentCalendar({ setView }: Props) {
   const [date, setDate] = useState(new Date())
   const initialAppointmentFormData: AppointmentFormData = {
-    client: "",
+    clientId: undefined,
     categoryId: undefined,
-    allDay: false,
-    start: undefined,
-    end: undefined,
+    startTime: undefined,
+    endTime: undefined,
     notes: "",
   }
 
@@ -55,10 +54,13 @@ export function AppointmentCalendar({ setView }: Props) {
   const [currentAppointment, setCurrentAppointment] = useState<
     Event | IAppointmentInfo | null
   >(null)
+  // TODO - update for appointments useQuery
+
   const [appointmentFormData, setAppointmentFormData] =
     useState<AppointmentFormData>(
       initialAppointmentFormData
     )
+  // TODO - update for appointments useQuery
   const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
 
   // Queries
@@ -74,15 +76,18 @@ export function AppointmentCalendar({ setView }: Props) {
   }
 
   function handleSelectAppointment(appointment: IAppointmentInfo) {
+    // TODO - update
     setCurrentAppointment(appointment)
     setAppointmentInfoModal(true)
   }
 
   function handleDatePickerClose() {
+    // TODO - update
     setAppointmentFormData(initialAppointmentFormData)
     setOpenAppointmentModal(false)
   }
 
+  // TODO - replace with useMutation
   function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
     setAppointments([...appointments, appointment])
   }
