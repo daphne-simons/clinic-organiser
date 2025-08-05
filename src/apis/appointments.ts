@@ -1,5 +1,5 @@
 import request from "superagent"
-import type { IAppointmentAPI, IAppointmentDraft, IAppointmentInfo } from "../models"
+import type { IAppointmentAPI, IAppointmentInfo } from "../models"
 
 export async function getAppointments() {
   const data = await request.get("http://localhost:3000/api/v1/appointments/")
@@ -16,12 +16,10 @@ export async function getAppointments() {
 export async function addAppointment(appointment: IAppointmentInfo) {
   // NOTE: needed to massage the data to work with the backend route. 
   const massagedAppointment = {
-    // TODO: get client id from name
-    clientId: 1,
+    clientId: 1, // TODO: get client id from name and replace this hardcoded value
     startTime: appointment.start,
     endTime: appointment.end,
-    // TODO: get category description from categoryId
-    appointmentType: "ACC",
+    appointmentType: "ACC", // TODO: get category description from categoryId and replace this hardcoded value
     notes: appointment.notes,
     customFields: appointment.customFields
   }
