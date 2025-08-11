@@ -1,6 +1,6 @@
 # Clinic Organiser
 
-Prototype for an acupuncture clinic management system with scheduling, client records, treatment notes, and body chart annotations. 
+Prototype for an acupuncture clinic management system that features appointment scheduling, client records, treatment notes, and body chart annotations. 
 
 ## Scripts: 
 
