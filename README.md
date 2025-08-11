@@ -18,6 +18,7 @@ Prototype for an acupuncture clinic management system with scheduling, client re
 ### Frontend:
 - React + TypeScript 
 - Material UI for rapid UI development
+- React Big Calendar [docs here](https://jquense.github.io/react-big-calendar/examples/?path=/docs/guides-timezones--page)
 - React Query (TanStack Query) for data fetching/caching
 - Fabric.js or Konva.js for body chart drawing functionality
 - Electron js
