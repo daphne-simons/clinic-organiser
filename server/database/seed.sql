@@ -32,10 +32,10 @@ ALTER SEQUENCE treatments_id_seq RESTART WITH 5;
 -- MINIMUM 1X PER SEED CLIENT
 
 INSERT INTO appointments (client_id, start_time, end_time, appointment_type, notes) VALUES 
-(1, timezone('UTC', CURRENT_DATE) + TIME '09:00:00', timezone('UTC', CURRENT_DATE) + TIME '10:00:00', 'ACC', 'First appointment'), 
-(2, timezone('UTC', CURRENT_DATE) + TIME '11:00:00', timezone('UTC', CURRENT_DATE) + TIME '12:00:00', 'ACC', 'Second appointment'), 
-(3, timezone('UTC', CURRENT_DATE) + TIME '13:30:00', timezone('UTC', CURRENT_DATE) + TIME '14:00:00', 'ACC', 'Third appointment'), 
-(4, timezone('UTC', CURRENT_DATE) + TIME '15:00:00', timezone('UTC', CURRENT_DATE) + TIME '16:00:00', 'Private', 'Fourth appointment');
+(1, timezone('UTC', CURRENT_DATE) + TIME '00:00:00', timezone('UTC', CURRENT_DATE) + TIME '01:00:00', 'ACC', '1st appointment'), 
+(4, timezone('UTC', CURRENT_DATE) + TIME '01:30:00', timezone('UTC', CURRENT_DATE) + TIME '02:30:00', 'Private', '2nd appointment'),
+(3, timezone('UTC', CURRENT_DATE) + TIME '03:00:00', timezone('UTC', CURRENT_DATE) + TIME '04:00:00', 'ACC', '3rd appointment'), 
+(2, timezone('UTC', CURRENT_DATE) + TIME '04:30:00', timezone('UTC', CURRENT_DATE) + TIME '05:30:00', 'Private', '4th appointment'); 
 ALTER SEQUENCE appointments_id_seq RESTART WITH 5;
 
 INSERT INTO forms (id, custom_fields) VALUES 
