@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useMemo,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -35,13 +34,12 @@ import type { View } from "./Layout"
 import { localizer } from "../localizer"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getCategories } from "../apis/categories"
-import { getAppointments, updateAppointment, deleteAppointment, addAppointment } from "../apis/appointments"
-import { fromZonedTime } from "date-fns-tz"
+import { getAppointments, addAppointment } from "../apis/appointments"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
-// ------- COMPONENT ------ 
+// --- COMPONENT ---
 export function AppointmentCalendar({ setView }: Props) {
 
   const initialAppointmentFormData: AppointmentFormData = {
@@ -52,8 +50,7 @@ export function AppointmentCalendar({ setView }: Props) {
     notes: "",
   }
 
-  // --- STATES
-
+  // --- STATES ---
   const [date, setDate] = useState(new Date())
   const [openAppointmentModal, setOpenAppointmentModal] = useState(false)
   const [openCategoryModal, setOpenCategoryModal] = useState(false)
@@ -61,30 +58,28 @@ export function AppointmentCalendar({ setView }: Props) {
   const [currentAppointment, setCurrentAppointment] = useState<
     Event | IAppointmentInfo | null
   >(null)
-  // TODO - update for appointments useQuery
+
   const [appointmentFormData, setAppointmentFormData] =
     useState<AppointmentFormData>(
       initialAppointmentFormData
     )
 
-  // --- QUERIES
+
+  // --- QUERIES --- 
+
+  // Categories
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: () => getCategories(),
   })
 
-  // useQuery for appointments
+  // Appointments
   const { data: appointments } = useQuery({
     queryKey: ["appointments"],
     queryFn: () => getAppointments(),
   })
 
-  // Transform appointments with proper timezone handling
-  // const appointments = useMemo(() => {
-  //   return transformAppointmentsForCalendar(appointmentsData || [])
-  // }, [appointmentsData])
-
-  // --- MUTATIONS
+  // --- MUTATIONS ---
 
   const queryClient = useQueryClient()
   const addAppointmentMutation = useMutation({
@@ -94,84 +89,28 @@ export function AppointmentCalendar({ setView }: Props) {
     }
   })
 
-  // Form Data
+  // TODO: update appointment mutation
+
+  // --- HANDLER FUNCTIONS ---
   function handleSelectSlot(appointment: Event) {
     setOpenAppointmentModal(true)
     setCurrentAppointment(appointment)
   }
 
   function handleSelectAppointment(appointment: IAppointmentInfo) {
-    // TODO - update
     setCurrentAppointment(appointment)
     setAppointmentInfoModal(true)
   }
 
   function handleDatePickerClose() {
-    // TODO - update
     setAppointmentFormData(initialAppointmentFormData)
     setOpenAppointmentModal(false)
   }
 
-  // TODO - replace with useMutation
   function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
-    console.log('=== STEP BY STEP DEBUG ===')
-    console.log('1. Original appointment:', appointment)
-    console.log('2. Start time type:', typeof appointment.startTime)
-    console.log('3. Start time value:', appointment.startTime)
-    console.log('4. Start time toString():', appointment.startTime.toString())
-    console.log('5. Start time toISOString():', appointment.startTime.toISOString())
-
-    // Test the conversion function directly
-    const testConversion = (date: Date): Date => {
-      console.log('--- CONVERSION FUNCTION START ---')
-      console.log('Input date:', date)
-      console.log('Input toString:', date.toString())
-      console.log('Input toISOString:', date.toISOString())
-
-      const year = date.getFullYear()
-      const month = date.getMonth() + 1
-      const day = date.getDate()
-      const hour = date.getHours()
-      const minute = date.getMinutes()
-
-      console.log(`Extracted: ${year}-${month}-${day} ${hour}:${minute}`)
-
-      const nzISOString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00+12:00`
-      console.log('Created NZ ISO string:', nzISOString)
-
-      const result = new Date(nzISOString)
-      console.log('Result date:', result)
-      console.log('Result toString:', result.toString())
-      console.log('Result toISOString:', result.toISOString())
-      console.log('--- CONVERSION FUNCTION END ---')
-
-      return result
-    }
-
-    console.log('6. Testing conversion on start time:')
-    const convertedStart = testConversion(appointment.startTime as Date)
-
-    console.log('7. Testing conversion on end time:')
-    const convertedEnd = testConversion(appointment.endTime as Date)
-
-    const appointmentUTC = {
-      ...appointment,
-      startTime: convertedStart,
-      endTime: convertedEnd,
-    }
-
-    console.log('8. Final appointment object:', appointmentUTC)
-    console.log('9. Final start ISO:', appointmentUTC.startTime.toISOString())
-    console.log('10. Final end ISO:', appointmentUTC.endTime.toISOString())
-    console.log('=== END DEBUG ===')
-
-    // Don't actually mutate yet, just debug
-    addAppointmentMutation.mutate(appointmentUTC)
+    addAppointmentMutation.mutate(appointment)
   }
 
-
-
-  console.log({ appointments });
   function onDeleteAppointment() {
     // TODO - replace with useMutation
     // setAppointments(() =>
