@@ -90,3 +90,19 @@ Can handle different client timezone formats consistently
       Times automatically appear in user's local time
       Works correctly even if user changes timezones
       No server round-trip needed for timezone changes
+
+## Routes: 
+
+Appointments: 
+
+the POST and PATCH routes use the client's local time in the req.body: 
+
+{
+    "clientId": 4,
+    "startTime": "2025-08-12T09:00:00+13:00",  // Auckland time
+    "endTime": "2025-08-12T10:00:00+13:00", // Auckland time
+    "appointmentType": "Edited",
+    "notes": "Patched appointment"
+  }
+
+  and it converts it to UTC before adding to database. 

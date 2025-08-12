@@ -14,6 +14,8 @@ router.get('/', async (req, res) => {
   }
 })
 
+
+
 // POST `api/v1/appointments/`
 router.post('/', async (req, res) => {
   const { clientId, startTime, endTime, appointmentType, notes } = req.body
