@@ -15,7 +15,13 @@ const config: PoolConfig = {
 
 const pool = new Pool(config);
 
-pool.query('SELECT current_setting(\'timezone\') as timezone', (err, result) => {
-  console.log('Pool timezone:', result.rows[0].timezone);
+pool.query('SELECT current_setting(\'timezone\') AS timezone', (error, result) => {
+  if (error) {
+    console.error('Error fetching timezone:', error)
+    return
+  }
+  const timezone = result.rows[0].timezone
+  console.log('Database connection timezone:', timezone)
 });
+
 export default pool;
