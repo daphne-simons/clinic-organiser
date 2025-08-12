@@ -9,8 +9,13 @@ const config: PoolConfig = {
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
+  // Set timezone for all connections in this pool
+  options: '-c timezone=UTC'
 };
 
 const pool = new Pool(config);
 
+pool.query('SELECT current_setting(\'timezone\') as timezone', (err, result) => {
+  console.log('Pool timezone:', result.rows[0].timezone);
+});
 export default pool;

@@ -17,8 +17,14 @@ router.get('/', async (req, res) => {
 // POST `api/v1/appointments/`
 router.post('/', async (req, res) => {
   const { clientId, startTime, endTime, appointmentType, notes } = req.body
+
+  // Convert timestamp to UTC before storing in database
+  const startTimeUTC = new Date(startTime).toISOString();
+  const endTimeUTC = new Date(endTime).toISOString();
+
   try {
-    await pool.query('INSERT INTO appointments (client_id, start_time, end_time, appointment_type, notes) VALUES ($1, $2, $3, $4, $5)', [clientId, startTime, endTime, appointmentType, notes])
+    await pool.query('INSERT INTO appointments (client_id, start_time, end_time, appointment_type, notes) VALUES ($1, $2, $3, $4, $5)', [clientId, startTimeUTC, endTimeUTC, appointmentType, notes])
+
     res.sendStatus(201)
   } catch (err) {
     console.error(err);
@@ -30,8 +36,13 @@ router.post('/', async (req, res) => {
 router.patch('/:id', async (req, res) => {
   const { id } = req.params
   const { clientId, startTime, endTime, appointmentType, notes } = req.body
+
+  // Convert timestamp to UTC before storing in database
+  const startTimeUTC = new Date(startTime).toISOString();
+  const endTimeUTC = new Date(endTime).toISOString();
+
   try {
-    await pool.query('UPDATE appointments SET client_id = $1, start_time = $2, end_time = $3, appointment_type = $4, notes = $5 WHERE id = $6', [clientId, startTime, endTime, appointmentType, notes, id])
+    await pool.query('UPDATE appointments SET client_id = $1, start_time = $2, end_time = $3, appointment_type = $4, notes = $5 WHERE id = $6', [clientId, startTimeUTC, endTimeUTC, appointmentType, notes, id])
     res.sendStatus(204)
   } catch (err) {
     console.error(err);
