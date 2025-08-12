@@ -1,4 +1,11 @@
-Having all database timestamps in UTC is generally considered a best practice. Here's why:
+# How to deal with time in this app: 
+
+Resources: 
+[Database Timestamps and Timezones](https://www.tinybird.co/blog-posts/database-timestamps-timezones)
+
+Having all database timestamps in UTC is generally considered a best practice. 
+
+Here's why:
 
 Timezone independence: UTC is not subject to daylight saving time (DST) changes or other timezone-specific adjustments, making it a consistent and reliable choice.
 Easier date/time calculations: When all timestamps are in UTC, you can perform date/time calculations without worrying about timezone conversions.
