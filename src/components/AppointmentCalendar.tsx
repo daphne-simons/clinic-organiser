@@ -39,7 +39,7 @@ import { getAppointments, addAppointment } from "../apis/appointments"
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
-// --- COMPONENT ---
+/////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
 
   const initialAppointmentFormData: AppointmentFormData = {
