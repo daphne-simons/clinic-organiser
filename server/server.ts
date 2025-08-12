@@ -2,11 +2,11 @@ import dotenv from 'dotenv'
 dotenv.config()
 import express from 'express'
 import * as Path from 'node:path'
+import cors from 'cors' // Import the cors middleware
 import clientsRoutes from './routes/clients'
 import categoriesRoutes from './routes/categories'
-import cors from 'cors' // Import the cors middleware
+import appointmentsRoutes from './routes/appointments'
 
-// routes go here
 const server = express()
 
 server.use(express.json())
@@ -17,6 +17,7 @@ server.use(cors({
 // connect to routes clients file" 
 server.use('/api/v1/clients', clientsRoutes)
 server.use('/api/v1/categories', categoriesRoutes)
+server.use('/api/v1/appointments', appointmentsRoutes)
 
 if (process.env.NODE_ENV === 'production') {
   server.use(express.static(Path.resolve('public')))

@@ -29,45 +29,69 @@ import AppointmentInfo from "./AppointmentInfo"
 import AppointmentInfoModal from "./AppointmentInfoModal"
 import { AddCategoryModal } from "./AddCategoryModal"
 import AddAppointmentModal from "./AddAppointmentModal"
-import { localizer } from "../localizer"
+// import { localizer, transformAppointmentsForCalendar } from "../localizer"
 import type { View } from "./Layout"
-import { useQuery } from "@tanstack/react-query"
+import { localizer } from "../localizer"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { getCategories } from "../apis/categories"
+import { getAppointments, addAppointment } from "../apis/appointments"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
+/////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
-  const [date, setDate] = useState(new Date())
+
   const initialAppointmentFormData: AppointmentFormData = {
-    client: "",
+    clientId: undefined,
     categoryId: undefined,
-    allDay: false,
-    start: undefined,
-    end: undefined,
+    startTime: undefined,
+    endTime: undefined,
     notes: "",
   }
 
-  // States
+  // --- STATES ---
+  const [date, setDate] = useState(new Date())
   const [openAppointmentModal, setOpenAppointmentModal] = useState(false)
   const [openCategoryModal, setOpenCategoryModal] = useState(false)
   const [appointmentInfoModal, setAppointmentInfoModal] = useState(false)
   const [currentAppointment, setCurrentAppointment] = useState<
     Event | IAppointmentInfo | null
   >(null)
+
   const [appointmentFormData, setAppointmentFormData] =
     useState<AppointmentFormData>(
       initialAppointmentFormData
     )
-  const [appointments, setAppointments] = useState<IAppointmentInfo[]>([])
 
-  // Queries
+
+  // --- QUERIES --- 
+
+  // Categories
   const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: () => getCategories(),
   })
 
-  // Form Data
+  // Appointments
+  const { data: appointments } = useQuery({
+    queryKey: ["appointments"],
+    queryFn: () => getAppointments(),
+  })
+
+  // --- MUTATIONS ---
+
+  const queryClient = useQueryClient()
+  const addAppointmentMutation = useMutation({
+    mutationFn: addAppointment,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] })
+    }
+  })
+
+  // TODO: update appointment mutation
+
+  // --- HANDLER FUNCTIONS ---
   function handleSelectSlot(appointment: Event) {
     setOpenAppointmentModal(true)
     setCurrentAppointment(appointment)
@@ -84,7 +108,7 @@ export function AppointmentCalendar({ setView }: Props) {
   }
 
   function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
-    setAppointments([...appointments, appointment])
+    addAppointmentMutation.mutate(appointment)
   }
 
   function onDeleteAppointment() {
@@ -100,8 +124,6 @@ export function AppointmentCalendar({ setView }: Props) {
   const onNavigate = useCallback((newDate: Date) => {
     setDate(newDate)
   }, [])
-
-  console.log("appointments", appointments);
 
   return (
     <Box
@@ -172,9 +194,9 @@ export function AppointmentCalendar({ setView }: Props) {
               onSelectEvent={handleSelectAppointment}
               onSelectSlot={handleSelectSlot}
               selectable
-              startAccessor="start"
+              startAccessor="startTime"
+              endAccessor="endTime"
               components={{ event: AppointmentInfo }}
-              endAccessor="end"
               defaultView="week"
               views={["week"]}
               eventPropGetter={(appointment) => {

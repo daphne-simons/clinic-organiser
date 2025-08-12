@@ -51,18 +51,6 @@ export interface ITreatment {
   custom_fields?: Record<string, string | number | boolean>
 }
 
-//////// Appointments stuff
-export interface IAppointment {
-  id: number
-  clientId: number
-  created_at?: string
-  updated_at?: string
-  startTime: string
-  endTime: string
-  appointmentType: number
-  notes: string
-  customFields?: Record<string, string | number | boolean>
-}
 
 //////// Edit Form stuff
 export interface IForm {
@@ -81,18 +69,41 @@ export interface ICategoryDraft {
   color?: string
 }
 
-export interface IAppointmentInfo extends Event {
+
+//////// Appointments stuff
+
+
+export interface AppointmentFormData {
   clientId?: number
   startTime?: Date
   endTime?: Date
   notes?: string
   categoryId?: number
 }
-
-export interface AppointmentFormData {
+export interface IAppointmentInfo extends Event {
+  id?: number
   clientId?: number
-  categoryId?: number
   startTime?: Date
   endTime?: Date
+  notes?: string
+  categoryId?: number
+  customFields?: Record<string, string | number | boolean>
+}
+
+export interface IAppointmentAPI {
+  id: number
+  clientId: number
+  startTime: string
+  endTime: string
+  appointmentType: string
+  notes: string
+  customFields?: Record<string, string | number | boolean>
+}
+
+export interface IAppointmentDraft {
+  clientId: number
+  startTime: Date
+  endTime: Date
+  appointmentType?: string
   notes?: string
 }
