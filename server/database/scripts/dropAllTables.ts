@@ -15,7 +15,6 @@ export async function dropAllTables(): Promise<void> {
 
     if (tableNames.length === 0) {
       console.log('No tables found to drop.');
-      // process.exit(0);
     } else {
 
     // Generate DROP TABLE statement
@@ -24,7 +23,6 @@ export async function dropAllTables(): Promise<void> {
     await pool.query(dropQuery);
     console.log('All tables dropped successfully.');
     }
-    // process.exit(0);
   } catch (error) {
     console.error('Error dropping tables:', error);
     process.exit(1);

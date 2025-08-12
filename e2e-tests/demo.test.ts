@@ -4,7 +4,6 @@ import { resetTestDatabase, reseedTestDatabase } from "./test-utils"
 
 let browser
 let page
-console.log('hi jared', process.env.NODE_ENV)
 
 beforeAll(async () => {
   await resetTestDatabase()

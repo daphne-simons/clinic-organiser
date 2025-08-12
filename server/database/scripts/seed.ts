@@ -18,7 +18,6 @@ export async function seed(): Promise<void> {
 
     if (tableNames.length === 0) {
       console.log('No tables found to seed.');
-      // process.exit(0);
     }
 
     // Delete all records in clients table and reset automaticly generated colums e.g. ID : 
@@ -39,7 +38,6 @@ export async function seed(): Promise<void> {
     await pool.query(seedSQL);
     console.log('Database seed completed successfully!');
 
-    // process.exit(0);
   } catch (error) {
     console.error('Seed failed:', error);
     process.exit(1);
