@@ -1,12 +1,19 @@
 import puppeteer from "puppeteer"
-import { afterAll, beforeAll, describe, expect, it } from "vitest"
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest"
+import { resetTestDatabase, reseedTestDatabase } from "./test-utils"
 
 let browser
 let page
+console.log('hi jared', process.env.NODE_ENV)
 
 beforeAll(async () => {
+  await resetTestDatabase()
   browser = await puppeteer.launch()
   page = await browser.newPage()
+})
+
+beforeEach(async () => {
+  await reseedTestDatabase()
 })
 
 afterAll(async () => {

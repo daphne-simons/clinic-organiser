@@ -4,7 +4,7 @@ import { join } from 'path';
 
 const __dirname = new URL('.', import.meta.url).pathname
 
-async function migrate(): Promise<void> {
+export async function migrate(): Promise<void> {
   try {
     console.log('Starting database migration...');
     const schemaSQL = readFileSync(
@@ -14,11 +14,11 @@ async function migrate(): Promise<void> {
     await pool.query(schemaSQL);
     console.log('Database migration completed successfully!');
 
-    process.exit(0);
+    // process.exit(0);
   } catch (error) {
     console.error('Migration failed:', error);
     process.exit(1);
   }
 }
 
-migrate();
+await migrate();
