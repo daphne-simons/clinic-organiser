@@ -78,16 +78,6 @@ Pros of server-side conversion - local to UTC:
     Can handle different client timezone formats consistently
 
 
-## Timezone takeaways/ strategies: 
-
-<!-- POST and PATCH -->
-- clients send local time to the server, 
-- server converts and stores in UTC, 
-
-<!-- GETs -->
-- server returns UTC to the client.
-- client converts UTC to local timezone (in clientside apis).
-
 # When do we want to convert UTC to local timezones? 
 
 When we fetch timezone data from the backend, it will be in UTC format, we will convert these to local timezones for a couple of reasons:
@@ -127,3 +117,14 @@ the POST and PATCH routes use the client's local time in the req.body:
   }
 
 It converts the times to UTC before adding to database. 
+
+
+## Timezone takeaways/ strategies: 
+
+<!-- POST and PATCH -->
+- clients send local time to the server, 
+- server converts and stores in UTC, 
+
+<!-- GETs -->
+- server returns UTC to the client.
+- client converts UTC to local timezone (in clientside apis).
