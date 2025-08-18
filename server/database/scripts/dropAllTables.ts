@@ -1,6 +1,6 @@
 import pool from '../config/connection';
 
-async function dropAllTables(): Promise<void> {
+export async function dropAllTables(): Promise<void> {
   try {
     console.log('Dropping all tables...');
 
@@ -15,16 +15,14 @@ async function dropAllTables(): Promise<void> {
 
     if (tableNames.length === 0) {
       console.log('No tables found to drop.');
-      process.exit(0);
-    }
+    } else {
 
     // Generate DROP TABLE statement
     const dropQuery = `DROP TABLE IF EXISTS ${tableNames.join(', ')} CASCADE;`;
 
     await pool.query(dropQuery);
     console.log('All tables dropped successfully.');
-
-    process.exit(0);
+    }
   } catch (error) {
     console.error('Error dropping tables:', error);
     process.exit(1);
@@ -32,4 +30,4 @@ async function dropAllTables(): Promise<void> {
 }
 
 // Run the function
-dropAllTables();
+await dropAllTables();
