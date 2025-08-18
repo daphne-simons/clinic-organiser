@@ -16,6 +16,12 @@ export interface IClient {
   custom_fields?: Record<string, string | number | boolean | CustomObject>
 }
 
+export interface IClientName {
+  id: string
+  first_name: string
+  last_name: string
+}
+
 export interface IClientForDropdown {
   id: number
   label: string
