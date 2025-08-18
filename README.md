@@ -2,6 +2,14 @@
 
 Prototype for an acupuncture clinic management system that features appointment scheduling, client records, treatment notes, and body chart annotations. 
 
+## Getting started
+
+- Clone this repo and `npm i`
+- Create a local Postgres db for development and another testing instance (eg one db called `clinic_organiser` and another called `testing_clinic_organiser`)
+- Copy the `.env.example` file and rename it to `.env`, then fill the detials in using credentials you created when making the db
+- Run `npm run migrate` in your terminal
+- Run `npm run seed` in your terminal
+
 ## Scripts: 
 
 - `npm run dev` for local development
@@ -36,3 +44,7 @@ Prototype for an acupuncture clinic management system that features appointment 
 ### Deployment: 
 - Database on Railway
 - a downloadable executable file with Electron 
+
+### Testing:
+- Vitest
+- Puppeteer
