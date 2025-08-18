@@ -6,13 +6,13 @@ const __dirname = new URL('.', import.meta.url).pathname
 
 export async function migrate(): Promise<void> {
   try {
-    console.log('Starting database migration...');
+    if (process.env.NODE_ENV !== 'test') console.log('Starting database migration...');
     const schemaSQL = readFileSync(
       join(__dirname, '../schema.sql'),
       'utf8'
     );
     await pool.query(schemaSQL);
-    console.log('Database migration completed successfully!');
+   if (process.env.NODE_ENV !== 'test') console.log('Database migration completed successfully!');
 
   } catch (error) {
     console.error('Migration failed:', error);

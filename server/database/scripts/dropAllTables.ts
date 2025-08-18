@@ -21,7 +21,7 @@ export async function dropAllTables(): Promise<void> {
     const dropQuery = `DROP TABLE IF EXISTS ${tableNames.join(', ')} CASCADE;`;
 
     await pool.query(dropQuery);
-    console.log('All tables dropped successfully.');
+    if (process.env.NODE_ENV !== 'test') console.log('All tables dropped successfully.');
     }
   } catch (error) {
     console.error('Error dropping tables:', error);

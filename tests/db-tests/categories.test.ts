@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest"
+import { beforeAll, beforeEach, describe, expect, it } from "vitest"
 
 import {
   addCategory,
@@ -13,10 +13,9 @@ beforeAll(async () => {
 beforeEach(async () => {
   await reseedTestDatabase()
 })
-afterAll(async () => {})
 
 describe("getAllCategories", async () => {
-  it("returns all categories", async () => {
+  it("returns all entries in the categories table", async () => {
     const expected = [
       { _id: 1, color: "blue", title: "ACC" },
       { _id: 2, color: "green", title: "Private" },
@@ -47,7 +46,7 @@ describe("deleteCategory", async () => {
     const result = await getAllCategories()
     expect(result).toEqual(expected)
   })
-  it("fails if id is not in number format", async () => {
+  it("fails if id is not a number", async () => {
     expect.assertions(1) // set the number of expected assertions - in this case the test can only pass if the catch block is triggered
     try {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
