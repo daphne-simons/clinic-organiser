@@ -25,10 +25,10 @@ export async function seed(): Promise<void> {
 
     await pool.query(delRecords);
 
-    console.log('Database reset completed successfully!');
+    if (process.env.NODE_ENV !== 'test') console.log('Database reset completed successfully!');
 
     // Seed
-    console.log('Starting database seed...');
+    if (process.env.NODE_ENV !== 'test') console.log('Starting database seed...');
 
     const seedSQL = readFileSync(
       join(__dirname, '../seed.sql'),
@@ -36,7 +36,7 @@ export async function seed(): Promise<void> {
     );
 
     await pool.query(seedSQL);
-    console.log('Database seed completed successfully!');
+    if (process.env.NODE_ENV !== 'test') console.log('Database seed completed successfully!');
 
   } catch (error) {
     console.error('Seed failed:', error);

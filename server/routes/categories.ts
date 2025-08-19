@@ -1,39 +1,42 @@
-import express from 'express'
-import pool from '../database/config/connection'
+import express from "express"
 const router = express.Router()
 
-router.get('/', async (req, res) => {
+import {
+  getAllCategories,
+  addCategory,
+  deleteCategory,
+} from "../database/dbFunctions/categories"
+
+router.get("/", async (req, res) => {
   try {
-    const result = await pool.query('SELECT id AS _id, title, color FROM categories')
-    res.status(200).json(result.rows)
+    const result = await getAllCategories()
+    res.status(200).json(result)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' })
+    console.error(err)
+    res.status(500).json({ error: "Internal Server Error" })
   }
 })
 
-router.post('/', async (req, res) => {
-  const {title, color} = req.body
+router.post("/", async (req, res) => {
+  const { title, color } = req.body
   try {
-    await pool.query('INSERT INTO categories (title, color) VALUES ($1, $2)', [title, color])
+    await addCategory(title, color)
     res.sendStatus(201)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' })
+    console.error(err)
+    res.status(500).json({ error: "Internal Server Error" })
   }
 })
 
-router.delete('/:id', async (req, res) => {
-  const {id} = req.params
+router.delete("/:id", async (req, res) => {
+  const id = Number(req.params)
   try {
-    await pool.query('DELETE FROM categories WHERE id = ($1)', [id])
+    await deleteCategory(id)
     res.sendStatus(204)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' })
+    console.error(err)
+    res.status(500).json({ error: "Internal Server Error" })
   }
 })
 
-
 export default router
-

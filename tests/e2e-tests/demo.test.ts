@@ -1,6 +1,6 @@
 import puppeteer from "puppeteer"
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest"
-import { resetTestDatabase, reseedTestDatabase } from "./test-utils"
+import { resetTestDatabase, reseedTestDatabase } from "../test-utils"
 
 let browser
 let page
