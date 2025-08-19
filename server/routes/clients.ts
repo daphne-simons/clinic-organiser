@@ -1,28 +1,30 @@
-import express from 'express'
-import pool from '../database/config/connection'
+import express from "express"
 const router = express.Router()
 
-router.get('/', async (req, res) => {
+import {
+  getAllClientsNames,
+  getClientById,
+} from "../database/dbFunctions/clients"
+
+router.get("/", async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, first_name, last_name FROM clients')
-    res.status(200).json(result.rows)
+    const result = await getAllClientsNames()
+    res.status(200).json(result)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' })
+    console.error(err)
+    res.status(500).json({ error: "Internal Server Error" })
   }
 })
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params
-    const result = await pool.query('SELECT * FROM clients WHERE id = $1', [id])
-    res.status(200).json(result.rows)
+    const result = await getClientById(id)
+    res.status(200).json(result)
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal Server Error' })
+    console.error(err)
+    res.status(500).json({ error: "Internal Server Error" })
   }
 })
 
-
 export default router
-

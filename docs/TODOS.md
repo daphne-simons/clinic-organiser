@@ -41,3 +41,5 @@ STACK / TECH DECISIONS:
 NOTICINGS: 
 
 There could be a need to have the clients table notes field be it's own table too. For instacne if the user wants to add more notes to the main client info page as they go, not treatment notes, this new table would give the possibility to date any additional notes. 
+
+Once we figure out how we're handling auth we need to update the clients table schema to include the "auth_id" which will be a string. We could keep the current id which is an integer, but the models say its a string.
