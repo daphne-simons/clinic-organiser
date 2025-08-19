@@ -1,8 +1,8 @@
 import request from 'superagent'
 import type { IClient, IClientForDropdown } from '../models';
 
-export async function getAllClientNames() {
-  const data = await request.get('http://localhost:3000/api/v1/clients/')
+export async function getAllClientNames(token: string) {
+  const data = await request.get('http://localhost:3000/api/v1/clients/').set('Authorization', `Bearer ${token}`)
   return data.body.map((client: IClient) => {
     return {
       id: client.id,
@@ -10,22 +10,22 @@ export async function getAllClientNames() {
     }
   }) as IClientForDropdown[]
 }
-export async function getClientById(id: number) {
-  const data = await request.get(`http://localhost:3000/api/v1/clients/${id}`)
+export async function getClientById(id: number, token: string) {
+  const data = await request.get(`http://localhost:3000/api/v1/clients/${id}`).set('Authorization', `Bearer ${token}`)
   return data.body as IClient
 }
 
-export function addClient(client: unknown) {
+export function addClient(client: unknown, token: string) {
   // TODO: POST to db
-  console.log(client);
+  console.log(client, token);
 }
 
-export function updateClient(client: unknown) {
+export function updateClient(client: unknown, token: string) {
   // TODO: PUT to db
-  console.log(client);
+  console.log(client, token);
 }
 
-export function deleteClient(client) {
+export function deleteClient(client: unknown, token: string) {
   // TODO: DELETE to db
-  console.log(client);
+  console.log(client, token);
 }

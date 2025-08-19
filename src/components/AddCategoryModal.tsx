@@ -18,9 +18,10 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete"
 
 import { HexColorPicker } from "react-colorful"
-import { type ICategory } from "../models"
+import { type ICategory, type ICategoryDraft } from "../models"
 import { addCategory, deleteCategory } from "../apis/categories"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useAuth0 } from "@auth0/auth0-react"
 
 interface IProps {
   open: boolean
@@ -31,17 +32,23 @@ interface IProps {
 export function AddCategoryModal({ open, handleClose, categories }: IProps) {
   const [color, setColor] = useState("#b32aa9")
   const [title, setTitle] = useState("")
-
+  const { getAccessTokenSilently } = useAuth0()
   // mutations
   const queryClient = useQueryClient()
   const addMutation = useMutation({
-    mutationFn: addCategory,
+    mutationFn: async (category: ICategoryDraft) => {
+      const accessToken = await getAccessTokenSilently()
+      return addCategory(category, accessToken)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] })
     },
   })
   const deleteMutation = useMutation({
-    mutationFn: deleteCategory,
+    mutationFn: async (id: number) => {
+      const accessToken = await getAccessTokenSilently()
+      return deleteCategory(id, accessToken)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] })
     },

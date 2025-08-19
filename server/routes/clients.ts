@@ -1,12 +1,13 @@
 import express from "express"
 const router = express.Router()
+import checkJwt from "../auth"
 
 import {
   getAllClientsNames,
   getClientById,
 } from "../database/dbFunctions/clients"
 
-router.get("/", async (req, res) => {
+router.get("/", checkJwt, async (req, res) => {
   try {
     const result = await getAllClientsNames()
     res.status(200).json(result)
@@ -16,7 +17,7 @@ router.get("/", async (req, res) => {
   }
 })
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", checkJwt, async (req, res) => {
   try {
     const { id } = req.params
     const result = await getClientById(id)

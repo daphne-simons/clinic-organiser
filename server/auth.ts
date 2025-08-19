@@ -1,4 +1,4 @@
-import { expressjwt as jwt, GetVerificationKey } from 'express-jwt'
+import { expressjwt as jwt } from 'express-jwt'
 import { Request } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { JwtPayload } from 'jsonwebtoken'

@@ -1,5 +1,6 @@
 import express from "express"
 const router = express.Router()
+import checkJwt from "../auth"
 
 import {
   getAllCategories,
@@ -7,7 +8,7 @@ import {
   deleteCategory,
 } from "../database/dbFunctions/categories"
 
-router.get("/", async (req, res) => {
+router.get("/", checkJwt, async (req, res) => {
   try {
     const result = await getAllCategories()
     res.status(200).json(result)
@@ -17,7 +18,7 @@ router.get("/", async (req, res) => {
   }
 })
 
-router.post("/", async (req, res) => {
+router.post("/", checkJwt, async (req, res) => {
   const { title, color } = req.body
   try {
     await addCategory(title, color)
@@ -28,7 +29,7 @@ router.post("/", async (req, res) => {
   }
 })
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", checkJwt, async (req, res) => {
   const id = Number(req.params)
   try {
     await deleteCategory(id)

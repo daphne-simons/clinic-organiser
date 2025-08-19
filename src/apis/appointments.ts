@@ -1,9 +1,8 @@
 import request from "superagent"
 import type { IAppointmentAPI, IAppointmentInfo } from "../models"
 
-export async function getAppointments() {
-
-  const data = await request.get("http://localhost:3000/api/v1/appointments/")
+export async function getAppointments(token: string) {
+  const data = await request.get("http://localhost:3000/api/v1/appointments/").set('Authorization', `Bearer ${token}`)
 
   const result = data.body.map((appointment: IAppointmentAPI) => ({
     ...appointment,
@@ -15,14 +14,14 @@ export async function getAppointments() {
   return result as IAppointmentInfo[]
 }
 
-export async function addAppointment(appointment: IAppointmentInfo) {
+export async function addAppointment(appointment: IAppointmentInfo, token: string) {
 
-  await request.post("http://localhost:3000/api/v1/appointments/").send(appointment)
+  await request.post("http://localhost:3000/api/v1/appointments/").send(appointment).set('Authorization', `Bearer ${token}`)
 }
 
-export async function updateAppointment(appointment: IAppointmentInfo) {
-  await request.patch(`http://localhost:3000/api/v1/appointments/${appointment.id}`).send(appointment)
+export async function updateAppointment(appointment: IAppointmentInfo, token: string) {
+  await request.patch(`http://localhost:3000/api/v1/appointments/${appointment.id}`).send(appointment).set('Authorization', `Bearer ${token}`)
 }
-export async function deleteAppointment(id: number) {
-  await request.delete(`http://localhost:3000/api/v1/appointments/${id}`)
+export async function deleteAppointment(id: number, token: string) {
+  await request.delete(`http://localhost:3000/api/v1/appointments/${id}`).set('Authorization', `Bearer ${token}`)
 }

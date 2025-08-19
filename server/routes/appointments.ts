@@ -1,5 +1,6 @@
 import express from "express"
 const router = express.Router()
+import checkJwt from "../auth"
 
 import {
   getAllAppointments,
@@ -9,7 +10,7 @@ import {
 } from "../database/dbFunctions/appointments"
 
 // GET `api/v1/appointments/`
-router.get("/", async (req, res) => {
+router.get("/", checkJwt, async (req, res) => {
   try {
     const result = await getAllAppointments()
     res.status(200).json(result)
@@ -20,7 +21,7 @@ router.get("/", async (req, res) => {
 })
 
 // POST `api/v1/appointments/`
-router.post("/", async (req, res) => {
+router.post("/", checkJwt, async (req, res) => {
   const { clientId, startTime, endTime, appointmentType, notes } = req.body
 
   // Convert timestamp to UTC before storing in database
@@ -43,7 +44,7 @@ router.post("/", async (req, res) => {
 })
 
 // PATCH `api/v1/appointments/4`
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", checkJwt, async (req, res) => {
   const id = Number(req.params.id)
   const { clientId, startTime, endTime, appointmentType, notes } = req.body
 
@@ -68,7 +69,7 @@ router.patch("/:id", async (req, res) => {
 })
 
 // DELETE `api/v1/appointments/4`
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", checkJwt, async (req, res) => {
   const id = Number(req.params.id)
   try {
     await deleteAppointment(id)
