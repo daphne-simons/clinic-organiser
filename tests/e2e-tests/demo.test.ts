@@ -8,18 +8,13 @@ import {
 } from "../test-utils"
 import { spawn } from "child_process"
 
+let serverProcess
 let browser
 let page
 
-let serverProcess
-
 beforeAll(async () => {
   await resetTestDatabase()
-
-  // Start your dev server process (adjust command as needed)
   serverProcess = spawn("npm", ["run", "dev"], { stdio: "inherit" })
-
-  // Wait for server to be ready
   await waitForServer("http://localhost:5173/", 30000)
   await resetTestDatabase()
   browser = await puppeteer.launch()
