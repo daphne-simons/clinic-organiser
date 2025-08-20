@@ -3,20 +3,27 @@ import { Request } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { JwtPayload } from 'jsonwebtoken'
 import jwks from 'jwks-rsa'
+import 'dotenv/config'
 
-// TODO: set the domain and audience (API Identifier)
-const domain = process.env.VITE_AUTH0_DOMAIN
-const audience = process.env.VITE_AUTH0_AUDIENCE
+const domain = process.env.AUTH0_DOMAIN
+const audience = process.env.AUTH0_AUDIENCE
+
+if (!domain || !audience) {
+  console.error('Missing AUTH0_DOMAIN or AUTH0_AUDIENCE environment variables')
+  console.error('AUTH0_DOMAIN:', domain)
+  console.error('AUTH0_AUDIENCE:', audience)
+  throw new Error('Auth0 configuration incomplete')
+}
 
 const checkJwt = jwt({
   secret: jwks.expressJwtSecret({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: `${domain}/.well-known/jwks.json`,
+    jwksUri: `https://${domain}/.well-known/jwks.json`,
   }),
   audience: audience,
-  issuer: `${domain}/`,
+  issuer: `https://${domain}/`,
   algorithms: ['RS256'],
 })
 
