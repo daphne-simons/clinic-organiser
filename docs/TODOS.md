@@ -29,14 +29,11 @@ Do we even need that functionality?
 
 - Make index tables. 
 
-RESEARCH: 
-
-How the heck do we test a postgres database??? Is it in memory? lolll 
 
 STACK / TECH DECISIONS: 
 
-- NO REACT ROUTER -FUCK THAT
-- YES to Electron babyyyy
+- No REact Router, just conditional layouts
+- YES to Electron.js
 
 NOTICINGS: 
 
