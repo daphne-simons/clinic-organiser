@@ -1,3 +1,5 @@
+import { useAuth0 } from "@auth0/auth0-react"
+
 import {
   useCallback,
   useState,
@@ -42,6 +44,7 @@ interface Props {
 /////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
 
+  const { getAccessTokenSilently } = useAuth0()
   const initialAppointmentFormData: AppointmentFormData = {
     clientId: undefined,
     categoryId: undefined,
@@ -70,20 +73,29 @@ export function AppointmentCalendar({ setView }: Props) {
   // Categories
   const { data: categories } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories(),
+    queryFn: async () => {
+      const accessToken = await getAccessTokenSilently()
+      return getCategories(accessToken)
+    },
   })
 
   // Appointments
   const { data: appointments } = useQuery({
     queryKey: ["appointments"],
-    queryFn: () => getAppointments(),
+    queryFn: async () => {
+      const accessToken = await getAccessTokenSilently()
+      return getAppointments(accessToken)
+    },
   })
 
   // --- MUTATIONS ---
 
   const queryClient = useQueryClient()
   const addAppointmentMutation = useMutation({
-    mutationFn: addAppointment,
+    mutationFn: async (form: IAppointmentInfo) => {
+      const accessToken = await getAccessTokenSilently()
+      return addAppointment(form, accessToken)
+    }, //addAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] })
     }

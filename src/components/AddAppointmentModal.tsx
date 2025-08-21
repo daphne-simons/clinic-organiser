@@ -26,6 +26,7 @@ import {
 import type { AppointmentFormData, IAppointmentInfo, ICategory } from "../models"
 import { getAllClientNames } from "../apis/clients"
 import { useQuery } from "@tanstack/react-query"
+import { useAuth0 } from "@auth0/auth0-react"
 
 interface IProps {
   open: boolean
@@ -46,6 +47,7 @@ export default function AddAppointmentModal({
   categories,
 }: IProps) {
 
+  const { getAccessTokenSilently } = useAuth0()
   const initialFormData: AppointmentFormData = {
     clientId: undefined,
     categoryId: undefined,
@@ -63,7 +65,10 @@ export default function AddAppointmentModal({
   // --- QUERIES ---
   const { data: clients } = useQuery({
     queryKey: ["clientNamesForDropdown"],
-    queryFn: () => getAllClientNames(),
+    queryFn: async () => {
+      const accessToken = await getAccessTokenSilently()
+      return getAllClientNames(accessToken)
+    },
   })
 
   // --- HANDLER FUNCTIONS ---
