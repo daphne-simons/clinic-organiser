@@ -7,6 +7,7 @@ import {
   addClientFromAppointment,
   getAllClientsNames,
   getClientById,
+  updateClient
 } from "../database/dbFunctions/clients"
 
 router.get("/", checkJwt, async (req, res) => {
@@ -38,17 +39,23 @@ router.post("/", checkJwt, async (req, res) => {
       await addClientFromAppointment(firstName, lastName)
     }
     if (formSource === "clients") {
-      const {
-        firstName,
-        lastName,
-        dob,
-        mobile,
-        email,
-        customFields } = req.body
+      const { firstName, lastName, dob, mobile, email, customFields } = req.body
       await addClient(firstName, lastName, dob, mobile, email, customFields)
     }
 
     res.sendStatus(201)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: "Internal Server Error" })
+  }
+})
+
+router.patch("/:id", checkJwt, async (req, res) => {
+  const id = Number(req.params.id)
+  const { firstName, lastName, dob, mobile, email, customFields } = req.body
+  try {
+    await updateClient(id, firstName, lastName, dob, mobile, email, customFields)
+    res.sendStatus(200)
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: "Internal Server Error" })
