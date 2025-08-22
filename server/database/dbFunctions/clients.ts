@@ -51,3 +51,7 @@ export async function updateClient(
     [firstName, lastName, dob, mobile, email, customFields, clientId]
   )
 }
+
+export async function deleteClient(id: number): Promise<void> {
+  await pool.query("DELETE FROM clients WHERE id = ($1)", [id])
+}

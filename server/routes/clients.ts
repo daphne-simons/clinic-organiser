@@ -7,7 +7,8 @@ import {
   addClientFromAppointment,
   getAllClientsNames,
   getClientById,
-  updateClient
+  updateClient,
+  deleteClient
 } from "../database/dbFunctions/clients"
 
 router.get("/", checkJwt, async (req, res) => {
@@ -55,6 +56,17 @@ router.patch("/:id", checkJwt, async (req, res) => {
   const { firstName, lastName, dob, mobile, email, customFields } = req.body
   try {
     await updateClient(id, firstName, lastName, dob, mobile, email, customFields)
+    res.sendStatus(200)
+  } catch (err) {
+    console.error(err)
+    res.status(500).json({ error: "Internal Server Error" })
+  }
+})
+
+router.delete("/:id", checkJwt, async (req, res) => {
+  const id = Number(req.params.id)
+  try {
+    await deleteClient(id)
     res.sendStatus(200)
   } catch (err) {
     console.error(err)
