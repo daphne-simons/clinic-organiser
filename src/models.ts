@@ -81,6 +81,8 @@ export interface ICategoryDraft {
 
 export interface AppointmentFormData {
   clientId?: number
+  firstName?: string
+  lastName?: string
   startTime?: Date
   endTime?: Date
   notes?: string
@@ -89,6 +91,8 @@ export interface AppointmentFormData {
 export interface IAppointmentInfo extends Event {
   id?: number
   clientId?: number
+  firstName?: string
+  lastName?: string
   startTime?: Date
   endTime?: Date
   notes?: string
