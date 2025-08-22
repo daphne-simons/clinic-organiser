@@ -1,8 +1,8 @@
 import type { Event } from "react-big-calendar"
 
 // Custom Object interface
-type CustomObject = Record<string, string | number | boolean>
-
+export type CustomObject = Record<string, string | number | boolean>
+export type CustomFields = Record<string, string | number | boolean | CustomObject>
 //////// Client stuff
 export interface IClient {
   id: number
@@ -10,10 +10,10 @@ export interface IClient {
   updated_at?: string
   first_name: string
   last_name: string
-  dob: string
-  mobile: string
-  email: string
-  custom_fields?: Record<string, string | number | boolean | CustomObject>
+  dob?: string
+  mobile?: string
+  email?: string
+  custom_fields?: CustomFields
 }
 
 export interface IClientName {
@@ -33,7 +33,7 @@ export interface IMedicalHistory {
   client_id: number
   created_at?: string
   updated_at?: string
-  custom_fields?: Record<string, string | number | boolean>
+  custom_fields?: CustomFields
 }
 
 //////// TCM stuff
@@ -42,7 +42,7 @@ export interface ITcm {
   client_id: number
   created_at?: string
   updated_at?: string
-  custom_fields?: Record<string, string | number | boolean>
+  custom_fields?: CustomFields
 }
 
 //////// Treatments stuff
@@ -54,14 +54,14 @@ export interface ITreatment {
   date: string
   duration_minutes: number
   notes: string
-  custom_fields?: Record<string, string | number | boolean>
+  custom_fields?: CustomFields
 }
 
 
 //////// Edit Form stuff
 export interface IForm {
   id: string
-  custom_fields?: Record<string, string | number | boolean>
+  custom_fields?: CustomFields
 }
 
 /////// Calendar stuff
@@ -81,19 +81,23 @@ export interface ICategoryDraft {
 
 export interface AppointmentFormData {
   clientId?: number
+  firstName?: string
+  lastName?: string
+  categoryId?: number
   startTime?: Date
   endTime?: Date
   notes?: string
-  categoryId?: number
 }
 export interface IAppointmentInfo extends Event {
   id?: number
   clientId?: number
+  firstName?: string
+  lastName?: string
   startTime?: Date
   endTime?: Date
   notes?: string
   categoryId?: number
-  customFields?: Record<string, string | number | boolean>
+  customFields?: CustomFields
 }
 
 export interface IAppointmentAPI {
@@ -103,7 +107,7 @@ export interface IAppointmentAPI {
   endTime: string
   appointmentType: string
   notes: string
-  customFields?: Record<string, string | number | boolean>
+  customFields?: CustomFields
 }
 
 export interface IAppointmentDraft {

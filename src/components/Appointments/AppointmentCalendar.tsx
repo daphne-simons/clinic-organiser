@@ -20,10 +20,7 @@ import {
 import { Calendar } from "react-big-calendar"
 
 import type { Event } from "react-big-calendar"
-import type {
-  IAppointmentInfo,
-  AppointmentFormData,
-} from "../models"
+import type { IAppointmentInfo, AppointmentFormData } from "../../models"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
@@ -32,24 +29,43 @@ import AppointmentInfoModal from "./AppointmentInfoModal"
 import { AddCategoryModal } from "./AddCategoryModal"
 import AddAppointmentModal from "./AddAppointmentModal"
 // import { localizer, transformAppointmentsForCalendar } from "../localizer"
-import type { View } from "./Layout"
-import { localizer } from "../localizer"
+import type { View } from "../Layout"
+import { localizer } from "../../localizer"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getCategories } from "../apis/categories"
-import { getAppointments, addAppointment } from "../apis/appointments"
+import { getCategories } from "../../apis/categories"
+import { getAppointments, addAppointment } from "../../apis/appointments"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
 /////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
-
   const { getAccessTokenSilently } = useAuth0()
-  const initialAppointmentFormData: AppointmentFormData = {
-    clientId: undefined,
-    categoryId: undefined,
-    startTime: undefined,
-    endTime: undefined,
+  // const initialAppointmentFormData: AppointmentFormData = {
+  //   clientId: undefined,
+  //   categoryId: undefined,
+  //   startTime: undefined,
+  //   endTime: undefined,
+  //   notes: "",
+  // }
+  const getDefaultDate = () => {
+    const now = new Date()
+    now.setHours(9, 0, 0, 0) // Default to 9:00 AM
+    return now
+  }
+
+  const getDefaultEndDate = () => {
+    const now = new Date()
+    now.setHours(10, 0, 0, 0) // Default to 10:00 AM (1 hour later)
+    return now
+  }
+  const initialAppointmentFormData = {
+    clientId: undefined, // changed from undefined
+    firstName: "",       // Changed from undefined  
+    lastName: "",        // Changed from undefined
+    categoryId: undefined, // changed from undefined
+    startTime: getDefaultDate(),    // Use default date instead of null
+    endTime: getDefaultEndDate(),   // Use default end date
     notes: "",
   }
 
@@ -63,12 +79,9 @@ export function AppointmentCalendar({ setView }: Props) {
   >(null)
 
   const [appointmentFormData, setAppointmentFormData] =
-    useState<AppointmentFormData>(
-      initialAppointmentFormData
-    )
+    useState<AppointmentFormData>(initialAppointmentFormData)
 
-
-  // --- QUERIES --- 
+  // --- QUERIES ---
 
   // Categories
   const { data: categories } = useQuery({
@@ -98,7 +111,7 @@ export function AppointmentCalendar({ setView }: Props) {
     }, //addAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] })
-    }
+    },
   })
 
   // TODO: update appointment mutation
@@ -180,10 +193,9 @@ export function AppointmentCalendar({ setView }: Props) {
               open={openAppointmentModal}
               handleClose={handleDatePickerClose}
               appointmentFormData={appointmentFormData}
-              setAppointmentFormData={
-                setAppointmentFormData
-              }
+              setAppointmentFormData={setAppointmentFormData}
               onAddAppointment={onAddAppointmentFromDatePicker}
+              initialAppointmentFormData={initialAppointmentFormData}
               categories={categories || []}
             />
             <AppointmentInfoModal
