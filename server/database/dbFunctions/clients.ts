@@ -16,11 +16,12 @@ export async function getClientById(id: string): Promise<IClient> {
 export async function addClientFromAppointment(
   firstName: string,
   lastName: string
-): Promise<void> {
-  await pool.query(
-    "INSERT INTO clients (first_name, last_name) VALUES ($1, $2)",
+): Promise<Record<'id', number>> {
+  const id = await pool.query(
+    "INSERT INTO clients (first_name, last_name) VALUES ($1, $2) RETURNING id",
     [firstName, lastName]
   )
+  return {id: id.rows[0].id}
 }
 
 export async function addClient(
@@ -30,11 +31,12 @@ export async function addClient(
   mobile: string,
   email: string,
   customFields: CustomFields
-): Promise<void> {
-  await pool.query(
-    "INSERT INTO clients (first_name, last_name, dob, mobile, email, custom_fields) VALUES ($1, $2, $3, $4, $5, $6)",
+): Promise<Record<'id', number>> {
+  const id =await pool.query(
+    "INSERT INTO clients (first_name, last_name, dob, mobile, email, custom_fields) VALUES ($1, $2, $3, $4, $5, $6)  RETURNING id",
     [firstName, lastName, dob, mobile, email, customFields]
   )
+  return {id: id.rows[0].id}
 }
 
 export async function updateClient(

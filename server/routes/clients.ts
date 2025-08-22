@@ -34,17 +34,21 @@ router.get("/:id", checkJwt, async (req, res) => {
 
 router.post("/", checkJwt, async (req, res) => {
   const { formSource } = req.body
+  let id
   try {
     if (formSource === "appointments") {
       const { firstName, lastName } = req.body
-      await addClientFromAppointment(firstName, lastName)
+      id = await addClientFromAppointment(firstName, lastName)
     }
-    if (formSource === "clients") {
+    else if (formSource === "clients") {
       const { firstName, lastName, dob, mobile, email, customFields } = req.body
-      await addClient(firstName, lastName, dob, mobile, email, customFields)
+      id = await addClient(firstName, lastName, dob, mobile, email, customFields)
     }
-
-    res.sendStatus(201)
+    else {
+      throw new Error("Invalid form source")
+    }
+    console.log('id route', id)
+    res.status(201).json(id)
   } catch (err) {
     console.error(err)
     res.status(500).json({ error: "Internal Server Error" })

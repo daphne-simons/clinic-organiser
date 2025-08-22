@@ -9,8 +9,8 @@ import {
   Box,
   Typography,
 } from "@mui/material"
-import type { IAppointmentInfo } from "../models"
-import type { View } from "./Layout"
+import type { IAppointmentInfo } from "../../models"
+import type { View } from "../Layout"
 
 interface IProps {
   open: boolean

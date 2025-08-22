@@ -20,10 +20,7 @@ import {
 import { Calendar } from "react-big-calendar"
 
 import type { Event } from "react-big-calendar"
-import type {
-  IAppointmentInfo,
-  AppointmentFormData,
-} from "../models"
+import type { IAppointmentInfo, AppointmentFormData } from "../../models"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
@@ -32,18 +29,17 @@ import AppointmentInfoModal from "./AppointmentInfoModal"
 import { AddCategoryModal } from "./AddCategoryModal"
 import AddAppointmentModal from "./AddAppointmentModal"
 // import { localizer, transformAppointmentsForCalendar } from "../localizer"
-import type { View } from "./Layout"
-import { localizer } from "../localizer"
+import type { View } from "../Layout"
+import { localizer } from "../../localizer"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getCategories } from "../apis/categories"
-import { getAppointments, addAppointment } from "../apis/appointments"
+import { getCategories } from "../../apis/categories"
+import { getAppointments, addAppointment } from "../../apis/appointments"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
 /////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
-
   const { getAccessTokenSilently } = useAuth0()
   const initialAppointmentFormData: AppointmentFormData = {
     clientId: undefined,
@@ -63,12 +59,9 @@ export function AppointmentCalendar({ setView }: Props) {
   >(null)
 
   const [appointmentFormData, setAppointmentFormData] =
-    useState<AppointmentFormData>(
-      initialAppointmentFormData
-    )
+    useState<AppointmentFormData>(initialAppointmentFormData)
 
-
-  // --- QUERIES --- 
+  // --- QUERIES ---
 
   // Categories
   const { data: categories } = useQuery({
@@ -98,7 +91,7 @@ export function AppointmentCalendar({ setView }: Props) {
     }, //addAppointment,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] })
-    }
+    },
   })
 
   // TODO: update appointment mutation
@@ -180,9 +173,7 @@ export function AppointmentCalendar({ setView }: Props) {
               open={openAppointmentModal}
               handleClose={handleDatePickerClose}
               appointmentFormData={appointmentFormData}
-              setAppointmentFormData={
-                setAppointmentFormData
-              }
+              setAppointmentFormData={setAppointmentFormData}
               onAddAppointment={onAddAppointmentFromDatePicker}
               categories={categories || []}
             />

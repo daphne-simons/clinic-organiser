@@ -18,8 +18,8 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete"
 
 import { HexColorPicker } from "react-colorful"
-import { type ICategory, type ICategoryDraft } from "../models"
-import { addCategory, deleteCategory } from "../apis/categories"
+import { type ICategory, type ICategoryDraft } from "../../models"
+import { addCategory, deleteCategory } from "../../apis/categories"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useAuth0 } from "@auth0/auth0-react"
 
