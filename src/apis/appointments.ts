@@ -20,19 +20,21 @@ export async function addAppointment(
   appointment: IAppointmentInfo,
   token: string
 ) {
+
   const { firstName, lastName, ...rest } = appointment
   let clientId = appointment.clientId
   if (!clientId) {
     const response = await request
       .post("/api/v1/clients/")
       .send({
-        first_name: firstName,
-        last_name: lastName,
+        firstName,
+        lastName,
         formSource: "appointments",
       })
       .set("Authorization", `Bearer ${token}`)
     clientId = response.body.id
   }
+
   await request
     .post("/api/v1/appointments/")
     .send({

@@ -193,6 +193,7 @@ export default function AddAppointmentModal({
 
     onAddAppointment(newAppointment)
     setAppointmentFormData(initialAppointmentFormData)
+    setNewClient(false)
     handleClose()
   }
 
