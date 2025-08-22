@@ -83,10 +83,10 @@ export interface AppointmentFormData {
   clientId?: number
   firstName?: string
   lastName?: string
+  categoryId?: number
   startTime?: Date
   endTime?: Date
   notes?: string
-  categoryId?: number
 }
 export interface IAppointmentInfo extends Event {
   id?: number

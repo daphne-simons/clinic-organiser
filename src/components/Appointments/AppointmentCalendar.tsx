@@ -41,11 +41,31 @@ interface Props {
 /////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
   const { getAccessTokenSilently } = useAuth0()
-  const initialAppointmentFormData: AppointmentFormData = {
-    clientId: undefined,
-    categoryId: undefined,
-    startTime: undefined,
-    endTime: undefined,
+  // const initialAppointmentFormData: AppointmentFormData = {
+  //   clientId: undefined,
+  //   categoryId: undefined,
+  //   startTime: undefined,
+  //   endTime: undefined,
+  //   notes: "",
+  // }
+  const getDefaultDate = () => {
+    const now = new Date()
+    now.setHours(9, 0, 0, 0) // Default to 9:00 AM
+    return now
+  }
+
+  const getDefaultEndDate = () => {
+    const now = new Date()
+    now.setHours(10, 0, 0, 0) // Default to 10:00 AM (1 hour later)
+    return now
+  }
+  const initialAppointmentFormData = {
+    clientId: undefined, // changed from undefined
+    firstName: "",       // Changed from undefined  
+    lastName: "",        // Changed from undefined
+    categoryId: undefined, // changed from undefined
+    startTime: getDefaultDate(),    // Use default date instead of null
+    endTime: getDefaultEndDate(),   // Use default end date
     notes: "",
   }
 
@@ -175,6 +195,7 @@ export function AppointmentCalendar({ setView }: Props) {
               appointmentFormData={appointmentFormData}
               setAppointmentFormData={setAppointmentFormData}
               onAddAppointment={onAddAppointmentFromDatePicker}
+              initialAppointmentFormData={initialAppointmentFormData}
               categories={categories || []}
             />
             <AppointmentInfoModal
