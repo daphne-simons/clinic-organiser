@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
 
 import { getCategories } from '../apis/categories'
+import type { ICategory } from '../models'
 
 function useGetCategories() {
   const { user, getAccessTokenSilently } = useAuth0()
@@ -11,7 +12,7 @@ function useGetCategories() {
       const accessToken = await getAccessTokenSilently()
       if (user && user.sub) {
         const response = await getCategories(accessToken)
-        return response
+        return response as ICategory[]
       }
     },
   })

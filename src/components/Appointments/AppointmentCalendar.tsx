@@ -17,7 +17,7 @@ import {
 
 import { Calendar } from "react-big-calendar"
 import type { Event } from "react-big-calendar"
-import type { IAppointmentInfo, AppointmentFormData } from "../../models"
+import type { IAppointmentInfo } from "../../models"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
@@ -27,7 +27,7 @@ import AddCategoryModal from "./AddCategoryModal"
 import AddAppointmentModal from "./AddAppointmentModal"
 import type { View } from "../Layout"
 import { localizer } from "../../localizer"
-import { useAddAppointment, useGetAppointments } from "../../hooks/appointments"
+import { useGetAppointments } from "../../hooks/appointments"
 import useGetCategories from "../../hooks/categories"
 
 interface Props {
@@ -36,26 +36,6 @@ interface Props {
 
 /////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
-  const getDefaultDate = () => {
-    const now = new Date()
-    now.setHours(9, 0, 0, 0) // Default to 9:00 AM
-    return now
-  }
-
-  const getDefaultEndDate = () => {
-    const now = new Date()
-    now.setHours(10, 0, 0, 0) // Default to 10:00 AM (1 hour later)
-    return now
-  }
-  const initialAppointmentFormData = {
-    clientId: undefined,
-    firstName: "", // Changed from undefined
-    lastName: "", // Changed from undefined
-    categoryId: undefined,
-    startTime: getDefaultDate(), // Use default date instead of null
-    endTime: getDefaultEndDate(), // Use default end date
-    notes: "",
-  }
 
   // --- STATES ---
   const [date, setDate] = useState(new Date())
@@ -66,17 +46,10 @@ export function AppointmentCalendar({ setView }: Props) {
     Event | IAppointmentInfo | null
   >(null)
 
-  const [appointmentFormData, setAppointmentFormData] =
-    useState<AppointmentFormData>(initialAppointmentFormData)
-
   // --- QUERIES ---
 
   const { data: categories } = useGetCategories()
   const { data: appointments } = useGetAppointments()
-
-  // --- MUTATIONS ---
-
-  const addAppointmentMutation = useAddAppointment()
 
   // --- HANDLER FUNCTIONS ---
   function handleSelectSlot(appointment: Event) {
@@ -90,13 +63,9 @@ export function AppointmentCalendar({ setView }: Props) {
   }
 
   function handleDatePickerClose() {
-    setAppointmentFormData(initialAppointmentFormData)
     setOpenAppointmentModal(false)
   }
 
-  function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
-    addAppointmentMutation.mutate(appointment)
-  }
 
   function onDeleteAppointment() {
     // TODO - replace with useMutation
@@ -149,11 +118,6 @@ export function AppointmentCalendar({ setView }: Props) {
             <AddAppointmentModal
               open={openAppointmentModal}
               handleClose={handleDatePickerClose}
-              appointmentFormData={appointmentFormData}
-              setAppointmentFormData={setAppointmentFormData}
-              onAddAppointment={onAddAppointmentFromDatePicker}
-              initialAppointmentFormData={initialAppointmentFormData}
-              categories={categories || []}
             />
             <AppointmentInfoModal
               open={appointmentInfoModal}
