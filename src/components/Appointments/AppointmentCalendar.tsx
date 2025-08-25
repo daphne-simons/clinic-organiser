@@ -1,5 +1,3 @@
-import { useAuth0 } from "@auth0/auth0-react"
-
 import {
   useCallback,
   useState,
@@ -18,7 +16,6 @@ import {
 } from "@mui/material"
 
 import { Calendar } from "react-big-calendar"
-
 import type { Event } from "react-big-calendar"
 import type { IAppointmentInfo, AppointmentFormData } from "../../models"
 
@@ -26,28 +23,19 @@ import "react-big-calendar/lib/css/react-big-calendar.css"
 
 import AppointmentInfo from "./AppointmentInfo"
 import AppointmentInfoModal from "./AppointmentInfoModal"
-import { AddCategoryModal } from "./AddCategoryModal"
+import AddCategoryModal from "./AddCategoryModal"
 import AddAppointmentModal from "./AddAppointmentModal"
-// import { localizer, transformAppointmentsForCalendar } from "../localizer"
 import type { View } from "../Layout"
 import { localizer } from "../../localizer"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getCategories } from "../../apis/categories"
-import { getAppointments, addAppointment } from "../../apis/appointments"
+import { useAddAppointment, useGetAppointments } from "../../hooks/appointments"
+import useGetCategories from "../../hooks/categories"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
+
 /////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
-  const { getAccessTokenSilently } = useAuth0()
-  // const initialAppointmentFormData: AppointmentFormData = {
-  //   clientId: undefined,
-  //   categoryId: undefined,
-  //   startTime: undefined,
-  //   endTime: undefined,
-  //   notes: "",
-  // }
   const getDefaultDate = () => {
     const now = new Date()
     now.setHours(9, 0, 0, 0) // Default to 9:00 AM
@@ -60,12 +48,12 @@ export function AppointmentCalendar({ setView }: Props) {
     return now
   }
   const initialAppointmentFormData = {
-    clientId: undefined, // changed from undefined
-    firstName: "",       // Changed from undefined  
-    lastName: "",        // Changed from undefined
-    categoryId: undefined, // changed from undefined
-    startTime: getDefaultDate(),    // Use default date instead of null
-    endTime: getDefaultEndDate(),   // Use default end date
+    clientId: undefined,
+    firstName: "", // Changed from undefined
+    lastName: "", // Changed from undefined
+    categoryId: undefined,
+    startTime: getDefaultDate(), // Use default date instead of null
+    endTime: getDefaultEndDate(), // Use default end date
     notes: "",
   }
 
@@ -83,38 +71,12 @@ export function AppointmentCalendar({ setView }: Props) {
 
   // --- QUERIES ---
 
-  // Categories
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const accessToken = await getAccessTokenSilently()
-      return getCategories(accessToken)
-    },
-  })
-
-  // Appointments
-  const { data: appointments } = useQuery({
-    queryKey: ["appointments"],
-    queryFn: async () => {
-      const accessToken = await getAccessTokenSilently()
-      return getAppointments(accessToken)
-    },
-  })
+  const { data: categories } = useGetCategories()
+  const { data: appointments } = useGetAppointments()
 
   // --- MUTATIONS ---
 
-  const queryClient = useQueryClient()
-  const addAppointmentMutation = useMutation({
-    mutationFn: async (form: IAppointmentInfo) => {
-      const accessToken = await getAccessTokenSilently()
-      return addAppointment(form, accessToken)
-    }, //addAppointment,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments"] })
-    },
-  })
-
-  // TODO: update appointment mutation
+  const addAppointmentMutation = useAddAppointment()
 
   // --- HANDLER FUNCTIONS ---
   function handleSelectSlot(appointment: Event) {
@@ -138,11 +100,6 @@ export function AppointmentCalendar({ setView }: Props) {
 
   function onDeleteAppointment() {
     // TODO - replace with useMutation
-    // setAppointments(() =>
-    //   [...appointments].filter(
-    //     (e) => e.id !== (currentAppointment as IAppointmentInfo).id!
-    //   )
-    // )
     setAppointmentInfoModal(false)
   }
 

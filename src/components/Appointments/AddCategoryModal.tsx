@@ -29,7 +29,7 @@ interface IProps {
   categories: ICategory[]
 }
 
-export function AddCategoryModal({ open, handleClose, categories }: IProps) {
+export default function AddCategoryModal({ open, handleClose, categories }: IProps) {
   const [color, setColor] = useState("#b32aa9")
   const [title, setTitle] = useState("")
   const { getAccessTokenSilently } = useAuth0()
