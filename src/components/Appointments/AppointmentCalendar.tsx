@@ -40,7 +40,7 @@ export function AppointmentCalendar({ setView }: Props) {
   const [date, setDate] = useState(new Date())
   const [openAppointmentModal, setOpenAppointmentModal] = useState(false)
   const [openCategoryModal, setOpenCategoryModal] = useState(false)
-  const [appointmentInfoModal, setAppointmentInfoModal] = useState(false)
+  const [openAppointmentInfoModal, setOpenAppointmentInfoModal] = useState(false)
   const [currentAppointment, setCurrentAppointment] = useState<
     Event | IAppointmentInfo | null
   >(null)
@@ -58,7 +58,7 @@ export function AppointmentCalendar({ setView }: Props) {
 
   function handleSelectAppointment(appointment: IAppointmentInfo) {
     setCurrentAppointment(appointment)
-    setAppointmentInfoModal(true)
+    setOpenAppointmentInfoModal(true)
   }
 
   function handleDatePickerClose() {
@@ -113,8 +113,8 @@ export function AppointmentCalendar({ setView }: Props) {
               handleClose={handleDatePickerClose}
             />
             <AppointmentInfoModal
-              open={appointmentInfoModal}
-              handleClose={() => setAppointmentInfoModal(false)}
+              open={openAppointmentInfoModal}
+              handleClose={() => setOpenAppointmentInfoModal(false)}
               currentAppointment={currentAppointment as IAppointmentInfo}
               setView={setView}
             />
