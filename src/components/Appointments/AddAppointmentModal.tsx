@@ -267,10 +267,12 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
                 label="Select date"
                 value={appointmentFormData.startTime}
                 onChange={handleDateChange}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                renderInput={(params: any) => (
-                  <TextField {...params} halfWidth />
-                )}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    variant: "outlined",
+                  },
+                }}
               />
             </Box>
 
@@ -294,6 +296,12 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
                   label="Start Time"
                   value={appointmentFormData.startTime}
                   onChange={handleStartTimeChange}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      variant: "outlined",
+                    },
+                  }}
                 />
               </Box>
               {/* "to" separator */}
@@ -306,6 +314,12 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
                   label="End Time"
                   value={appointmentFormData.endTime}
                   onChange={handleEndTimeChange}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      variant: "outlined",
+                    },
+                  }}
                 />
               </Box>
             </Box>
