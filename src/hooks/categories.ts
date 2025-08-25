@@ -1,10 +1,10 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
 
-import { getCategories } from '../apis/categories'
-import type { ICategory } from '../models'
+import { addCategory, deleteCategory, getCategories } from '../apis/categories'
+import type { ICategory, ICategoryDraft } from '../models'
 
-function useGetCategories() {
+export function useGetCategories() {
   const { user, getAccessTokenSilently } = useAuth0()
   const { data, isLoading, isError } = useQuery({
     queryKey: ['categories'],
@@ -20,4 +20,32 @@ function useGetCategories() {
   return { data, isLoading, isError }
 }
 
-export default useGetCategories
+export function useAddCategory() {
+    const { getAccessTokenSilently } = useAuth0()
+
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (category: ICategoryDraft) => {
+      const accessToken = await getAccessTokenSilently()
+      return addCategory(category, accessToken)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] })
+    },
+  })
+}
+
+export function useDeleteCategory() {
+    const { getAccessTokenSilently } = useAuth0()
+
+  const queryClient = useQueryClient()
+  return useMutation({
+      mutationFn: async (id: number) => {
+        const accessToken = await getAccessTokenSilently()
+        return deleteCategory(id, accessToken)
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["categories"] })
+      },
+    })
+}

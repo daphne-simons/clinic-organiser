@@ -68,24 +68,11 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
     setNewClient(false)
     handleClose()
   }
-  function handleNotesChange(e: ChangeEvent<HTMLInputElement>) {
-    setAppointmentFormData((prevState) => ({
-      ...prevState,
-      notes: e.target.value,
-    }))
-  }
 
-  function handleFirstNameChange(e: ChangeEvent<HTMLInputElement>) {
+  function handleTextChange(e: ChangeEvent<HTMLInputElement>) {
     setAppointmentFormData((prevState) => ({
       ...prevState,
-      firstName: e.target.value,
-    }))
-  }
-
-  function handleLastNameChange(e: ChangeEvent<HTMLInputElement>) {
-    setAppointmentFormData((prevState) => ({
-      ...prevState,
-      lastName: e.target.value,
+      [e.target.name]: e.target.value,
     }))
   }
 
@@ -99,7 +86,10 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
     }))
   }
 
-  function handleClientChange(_e: React.SyntheticEvent, value: any | null) {
+  function handleClientChange(
+    _e: React.SyntheticEvent,
+    value: { id: number; label: string } | null
+  ) {
     setAppointmentFormData((prevState) => ({
       ...prevState,
       client: value?.label ?? "",
@@ -248,7 +238,7 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
                   fullWidth
                   // variant="outlined"
                   value={appointmentFormData.firstName}
-                  onChange={handleFirstNameChange}
+                  onChange={handleTextChange}
                 />
                 <Typography variant="h6" sx={{ mb: 0 }} color="primary">
                   Last Name
@@ -262,7 +252,7 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
                   fullWidth
                   // variant="outlined"
                   value={appointmentFormData.lastName}
-                  onChange={handleLastNameChange}
+                  onChange={handleTextChange}
                 />
               </Box>
             </>
@@ -351,7 +341,7 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
               fullWidth
               variant="outlined"
               value={appointmentFormData.notes}
-              onChange={handleNotesChange}
+              onChange={handleTextChange}
             />
           </Box>
         </Box>

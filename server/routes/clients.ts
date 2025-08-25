@@ -48,7 +48,6 @@ router.post("/", checkJwt, async (req, res) => {
     else {
       throw new Error("Invalid form source")
     }
-    console.log('id route', id)
     res.status(201).json(id)
   } catch (err) {
     console.error(err)

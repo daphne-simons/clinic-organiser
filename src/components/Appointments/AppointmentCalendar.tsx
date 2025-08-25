@@ -28,7 +28,7 @@ import AddAppointmentModal from "./AddAppointmentModal"
 import type { View } from "../Layout"
 import { localizer } from "../../localizer"
 import { useGetAppointments } from "../../hooks/appointments"
-import useGetCategories from "../../hooks/categories"
+import { useGetCategories } from "../../hooks/categories"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
@@ -36,7 +36,6 @@ interface Props {
 
 /////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
-
   // --- STATES ---
   const [date, setDate] = useState(new Date())
   const [openAppointmentModal, setOpenAppointmentModal] = useState(false)
@@ -65,7 +64,6 @@ export function AppointmentCalendar({ setView }: Props) {
   function handleDatePickerClose() {
     setOpenAppointmentModal(false)
   }
-
 
   function onDeleteAppointment() {
     // TODO - replace with useMutation
@@ -129,7 +127,6 @@ export function AppointmentCalendar({ setView }: Props) {
             <AddCategoryModal
               open={openCategoryModal}
               handleClose={() => setOpenCategoryModal(false)}
-              categories={categories || []}
             />
             <Calendar
               date={date}
