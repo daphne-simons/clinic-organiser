@@ -1,5 +1,3 @@
-import { useAuth0 } from "@auth0/auth0-react"
-
 import {
   useCallback,
   useState,
@@ -18,104 +16,40 @@ import {
 } from "@mui/material"
 
 import { Calendar } from "react-big-calendar"
-
 import type { Event } from "react-big-calendar"
-import type { IAppointmentInfo, AppointmentFormData } from "../../models"
+import type { IAppointmentInfo } from "../../models"
 
 import "react-big-calendar/lib/css/react-big-calendar.css"
 
 import AppointmentInfo from "./AppointmentInfo"
 import AppointmentInfoModal from "./AppointmentInfoModal"
-import { AddCategoryModal } from "./AddCategoryModal"
+import AddCategoryModal from "./AddCategoryModal"
 import AddAppointmentModal from "./AddAppointmentModal"
-// import { localizer, transformAppointmentsForCalendar } from "../localizer"
 import type { View } from "../Layout"
 import { localizer } from "../../localizer"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { getCategories } from "../../apis/categories"
-import { getAppointments, addAppointment } from "../../apis/appointments"
+import { useGetAppointments } from "../../hooks/appointments"
+import { useGetCategories } from "../../hooks/categories"
 
 interface Props {
   setView: Dispatch<SetStateAction<View>>
 }
+
 /////////////////////////////////////////////////////////////////////////////
 export function AppointmentCalendar({ setView }: Props) {
-  const { getAccessTokenSilently } = useAuth0()
-  // const initialAppointmentFormData: AppointmentFormData = {
-  //   clientId: undefined,
-  //   categoryId: undefined,
-  //   startTime: undefined,
-  //   endTime: undefined,
-  //   notes: "",
-  // }
-  const getDefaultDate = () => {
-    const now = new Date()
-    now.setHours(9, 0, 0, 0) // Default to 9:00 AM
-    return now
-  }
-
-  const getDefaultEndDate = () => {
-    const now = new Date()
-    now.setHours(10, 0, 0, 0) // Default to 10:00 AM (1 hour later)
-    return now
-  }
-  const initialAppointmentFormData = {
-    clientId: undefined, // changed from undefined
-    firstName: "",       // Changed from undefined  
-    lastName: "",        // Changed from undefined
-    categoryId: undefined, // changed from undefined
-    startTime: getDefaultDate(),    // Use default date instead of null
-    endTime: getDefaultEndDate(),   // Use default end date
-    notes: "",
-  }
-
   // --- STATES ---
   const [date, setDate] = useState(new Date())
   const [openAppointmentModal, setOpenAppointmentModal] = useState(false)
   const [openCategoryModal, setOpenCategoryModal] = useState(false)
-  const [appointmentInfoModal, setAppointmentInfoModal] = useState(false)
+  const [openAppointmentInfoModal, setOpenAppointmentInfoModal] = useState(false)
   const [currentAppointment, setCurrentAppointment] = useState<
     Event | IAppointmentInfo | null
   >(null)
 
-  const [appointmentFormData, setAppointmentFormData] =
-    useState<AppointmentFormData>(initialAppointmentFormData)
-
   // --- QUERIES ---
 
-  // Categories
-  const { data: categories } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const accessToken = await getAccessTokenSilently()
-      return getCategories(accessToken)
-    },
-  })
-
-  // Appointments
-  const { data: appointments } = useQuery({
-    queryKey: ["appointments"],
-    queryFn: async () => {
-      const accessToken = await getAccessTokenSilently()
-      return getAppointments(accessToken)
-    },
-  })
-
-  // --- MUTATIONS ---
-
-  const queryClient = useQueryClient()
-  const addAppointmentMutation = useMutation({
-    mutationFn: async (form: IAppointmentInfo) => {
-      const accessToken = await getAccessTokenSilently()
-      return addAppointment(form, accessToken)
-    }, //addAppointment,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["appointments"] })
-    },
-  })
-
-  // TODO: update appointment mutation
-
+  const { data: categories } = useGetCategories()
+  const { data: appointments } = useGetAppointments()
+  if (appointments) console.log('appointments', appointments)
   // --- HANDLER FUNCTIONS ---
   function handleSelectSlot(appointment: Event) {
     setOpenAppointmentModal(true)
@@ -124,26 +58,11 @@ export function AppointmentCalendar({ setView }: Props) {
 
   function handleSelectAppointment(appointment: IAppointmentInfo) {
     setCurrentAppointment(appointment)
-    setAppointmentInfoModal(true)
+    setOpenAppointmentInfoModal(true)
   }
 
   function handleDatePickerClose() {
-    setAppointmentFormData(initialAppointmentFormData)
     setOpenAppointmentModal(false)
-  }
-
-  function onAddAppointmentFromDatePicker(appointment: IAppointmentInfo) {
-    addAppointmentMutation.mutate(appointment)
-  }
-
-  function onDeleteAppointment() {
-    // TODO - replace with useMutation
-    // setAppointments(() =>
-    //   [...appointments].filter(
-    //     (e) => e.id !== (currentAppointment as IAppointmentInfo).id!
-    //   )
-    // )
-    setAppointmentInfoModal(false)
   }
 
   const onNavigate = useCallback((newDate: Date) => {
@@ -192,23 +111,16 @@ export function AppointmentCalendar({ setView }: Props) {
             <AddAppointmentModal
               open={openAppointmentModal}
               handleClose={handleDatePickerClose}
-              appointmentFormData={appointmentFormData}
-              setAppointmentFormData={setAppointmentFormData}
-              onAddAppointment={onAddAppointmentFromDatePicker}
-              initialAppointmentFormData={initialAppointmentFormData}
-              categories={categories || []}
             />
             <AppointmentInfoModal
-              open={appointmentInfoModal}
-              handleClose={() => setAppointmentInfoModal(false)}
-              onDeleteAppointment={onDeleteAppointment}
+              open={openAppointmentInfoModal}
+              handleClose={() => setOpenAppointmentInfoModal(false)}
               currentAppointment={currentAppointment as IAppointmentInfo}
               setView={setView}
             />
             <AddCategoryModal
               open={openCategoryModal}
               handleClose={() => setOpenCategoryModal(false)}
-              categories={categories || []}
             />
             <Calendar
               date={date}
@@ -225,7 +137,7 @@ export function AppointmentCalendar({ setView }: Props) {
               views={["week"]}
               eventPropGetter={(appointment) => {
                 const hasCategory = categories?.find(
-                  (category) => category._id === appointment.categoryId
+                  (category) => category.title === appointment.appointmentType
                 )
                 return {
                   style: {

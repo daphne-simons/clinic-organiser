@@ -5,6 +5,7 @@ import {
   type ChangeEvent,
   useState,
 } from "react"
+import { useQueryClient } from "@tanstack/react-query"
 import {
   TextField,
   Dialog,
@@ -23,82 +24,55 @@ import {
   DatePicker,
   TimePicker,
 } from "@mui/x-date-pickers"
+
 import type {
   AppointmentFormData,
   IAppointmentInfo,
   ICategory,
 } from "../../models"
-import { getAllClientNames } from "../../apis/clients"
-import { useQuery } from "@tanstack/react-query"
-import { useAuth0 } from "@auth0/auth0-react"
+import { useGetAllClientNames } from "../../hooks/clients"
+import { getDefaultEndDate, getDefaultStartDate } from "./utils"
+import { useAddAppointment } from "../../hooks/appointments"
 
 interface IProps {
   open: boolean
   handleClose: Dispatch<SetStateAction<void>>
-  appointmentFormData: AppointmentFormData
-  setAppointmentFormData: Dispatch<SetStateAction<AppointmentFormData>>
-  onAddAppointment: (appointment: IAppointmentInfo) => void
-  initialAppointmentFormData: AppointmentFormData
-  categories: ICategory[]
 }
 
 /////////////////////////////////////////////////////////////////////////////
-export default function AddAppointmentModal({
-  open,
-  handleClose,
-  setAppointmentFormData,
-  appointmentFormData,
-  onAddAppointment,
-  initialAppointmentFormData,
-  categories,
-}: IProps) {
-  const { getAccessTokenSilently } = useAuth0()
-  // const initialFormData: AppointmentFormData = {
-  //   clientId: null,
-  //   firstName: "",
-  //   lastName: "",
-  //   categoryId: null,
-  //   startTime: null,
-  //   endTime: null,
-  //   notes: null,
-  // }
+export default function AddAppointmentModal({ open, handleClose }: IProps) {
+  const queryClient = useQueryClient()
+
+  const initialAppointmentFormData = {
+    clientId: undefined,
+    firstName: "", // Changed from undefined
+    lastName: "", // Changed from undefined
+    appointmentType: "",
+    startTime: getDefaultStartDate(), // Use default date instead of null
+    endTime: getDefaultEndDate(), // Use default end date
+    notes: "",
+  }
 
   // --- STATE ---
-  // const [formData, setFormData] = useState<AppointmentFormData>(initialFormData)
+  const [appointmentFormData, setAppointmentFormData] =
+    useState<AppointmentFormData>(initialAppointmentFormData)
   const [newClient, setNewClient] = useState(false)
 
-  // --- QUERIES ---
-  const { data: clients } = useQuery({
-    queryKey: ["clientNamesForDropdown"],
-    queryFn: async () => {
-      const accessToken = await getAccessTokenSilently()
-      return getAllClientNames(accessToken)
-    },
-  })
+  // --- QUERIES & MUTATIONS---
+  const categories = queryClient.getQueryData(["categories"])
+  const { data: clients } = useGetAllClientNames()
+  const addAppointment = useAddAppointment()
 
   // --- HANDLER FUNCTIONS ---
   function onClose() {
     setNewClient(false)
     handleClose()
   }
-  function handleNotesChange(e: ChangeEvent<HTMLInputElement>) {
-    setAppointmentFormData((prevState) => ({
-      ...prevState,
-      notes: e.target.value,
-    }))
-  }
 
-  function handleFirstNameChange(e: ChangeEvent<HTMLInputElement>) {
+  function handleTextChange(e: ChangeEvent<HTMLInputElement>) {
     setAppointmentFormData((prevState) => ({
       ...prevState,
-      firstName: e.target.value,
-    }))
-  }
-
-  function handleLastNameChange(e: ChangeEvent<HTMLInputElement>) {
-    setAppointmentFormData((prevState) => ({
-      ...prevState,
-      lastName: e.target.value,
+      [e.target.name]: e.target.value,
     }))
   }
 
@@ -108,11 +82,14 @@ export default function AddAppointmentModal({
   ) {
     setAppointmentFormData((prevState) => ({
       ...prevState,
-      categoryId: value?._id,
+      appointmentType: value?.title,
     }))
   }
 
-  function handleClientChange(_e: React.SyntheticEvent, value: any | null) {
+  function handleClientChange(
+    _e: React.SyntheticEvent,
+    value: { id: number; label: string } | null
+  ) {
     setAppointmentFormData((prevState) => ({
       ...prevState,
       client: value?.label ?? "",
@@ -129,12 +106,12 @@ export default function AddAppointmentModal({
       endTime:
         newValue && prevState.endTime
           ? new Date(
-            newValue.getFullYear(),
-            newValue.getMonth(),
-            newValue.getDate(),
-            prevState.endTime.getHours(),
-            prevState.endTime.getMinutes()
-          )
+              newValue.getFullYear(),
+              newValue.getMonth(),
+              newValue.getDate(),
+              prevState.endTime.getHours(),
+              prevState.endTime.getMinutes()
+            )
           : undefined,
     }))
   }
@@ -171,13 +148,19 @@ export default function AddAppointmentModal({
   function isDisabled() {
     // If creating a new client, check firstName and lastName
     if (newClient) {
-      return !appointmentFormData.firstName?.trim() ||
+      return (
+        !appointmentFormData.firstName?.trim() ||
         !appointmentFormData.lastName?.trim() ||
         !appointmentFormData.startTime ||
         !appointmentFormData.endTime
+      )
     }
     // If selecting existing client, check clientId
-    return !appointmentFormData.clientId || !appointmentFormData.startTime || !appointmentFormData.endTime
+    return (
+      !appointmentFormData.clientId ||
+      !appointmentFormData.startTime ||
+      !appointmentFormData.endTime
+    )
   }
 
   function handleSubmit(e: MouseEvent<HTMLButtonElement>) {
@@ -191,7 +174,7 @@ export default function AddAppointmentModal({
       notes: appointmentFormData.notes,
     }
 
-    onAddAppointment(newAppointment)
+    addAppointment.mutate(newAppointment)
     setAppointmentFormData(initialAppointmentFormData)
     setNewClient(false)
     handleClose()
@@ -216,8 +199,9 @@ export default function AddAppointmentModal({
                 options={clients || []}
                 sx={{ width: 300, mb: 2, mt: 1 }}
                 value={
-                  clients?.find((client) => client.id === appointmentFormData.clientId) ||
-                  null
+                  clients?.find(
+                    (client) => client.id === appointmentFormData.clientId
+                  ) || null
                 }
                 onChange={handleClientChange}
                 renderInput={(params) => (
@@ -254,7 +238,7 @@ export default function AddAppointmentModal({
                   fullWidth
                   // variant="outlined"
                   value={appointmentFormData.firstName}
-                  onChange={handleFirstNameChange}
+                  onChange={handleTextChange}
                 />
                 <Typography variant="h6" sx={{ mb: 0 }} color="primary">
                   Last Name
@@ -268,7 +252,7 @@ export default function AddAppointmentModal({
                   fullWidth
                   // variant="outlined"
                   value={appointmentFormData.lastName}
-                  onChange={handleLastNameChange}
+                  onChange={handleTextChange}
                 />
               </Box>
             </>
@@ -283,10 +267,12 @@ export default function AddAppointmentModal({
                 label="Select date"
                 value={appointmentFormData.startTime}
                 onChange={handleDateChange}
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                renderInput={(params: any) => (
-                  <TextField {...params} halfWidth />
-                )}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                    variant: "outlined",
+                  },
+                }}
               />
             </Box>
 
@@ -310,6 +296,12 @@ export default function AddAppointmentModal({
                   label="Start Time"
                   value={appointmentFormData.startTime}
                   onChange={handleStartTimeChange}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      variant: "outlined",
+                    },
+                  }}
                 />
               </Box>
               {/* "to" separator */}
@@ -322,6 +314,12 @@ export default function AddAppointmentModal({
                   label="End Time"
                   value={appointmentFormData.endTime}
                   onChange={handleEndTimeChange}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      variant: "outlined",
+                    },
+                  }}
                 />
               </Box>
             </Box>
@@ -335,7 +333,7 @@ export default function AddAppointmentModal({
               onChange={handleCategoryChange}
               disablePortal
               id="combo-box-demo"
-              options={categories}
+              options={categories as ICategory[]}
               sx={{ mt: 1 }}
               getOptionLabel={(option) => option.title}
               renderInput={(params) => (
@@ -357,7 +355,7 @@ export default function AddAppointmentModal({
               fullWidth
               variant="outlined"
               value={appointmentFormData.notes}
-              onChange={handleNotesChange}
+              onChange={handleTextChange}
             />
           </Box>
         </Box>

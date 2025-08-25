@@ -18,52 +18,37 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete"
 
 import { HexColorPicker } from "react-colorful"
-import { type ICategory, type ICategoryDraft } from "../../models"
-import { addCategory, deleteCategory } from "../../apis/categories"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useAuth0 } from "@auth0/auth0-react"
+import { type ICategory } from "../../models"
+import { useQueryClient } from "@tanstack/react-query"
+import { useAddCategory, useDeleteCategory } from "../../hooks/categories"
 
 interface IProps {
   open: boolean
   handleClose: Dispatch<SetStateAction<void>>
-  categories: ICategory[]
 }
 
-export function AddCategoryModal({ open, handleClose, categories }: IProps) {
+export default function AddCategoryModal({ open, handleClose }: IProps) {
+  const queryClient = useQueryClient()
+
+  // --- STATE ---
   const [color, setColor] = useState("#b32aa9")
   const [title, setTitle] = useState("")
-  const { getAccessTokenSilently } = useAuth0()
-  // mutations
-  const queryClient = useQueryClient()
-  const addMutation = useMutation({
-    mutationFn: async (category: ICategoryDraft) => {
-      const accessToken = await getAccessTokenSilently()
-      return addCategory(category, accessToken)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] })
-    },
-  })
-  const deleteMutation = useMutation({
-    mutationFn: async (id: number) => {
-      const accessToken = await getAccessTokenSilently()
-      return deleteCategory(id, accessToken)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] })
-    },
-  })
+  
+  // --- QUERIES & MUTATIONS---
+  const categories = queryClient.getQueryData(["categories"]) as ICategory[]
+  const addCategory = useAddCategory()
+  const deleteCategory = useDeleteCategory()
 
   function onAddCategory() {
     setTitle("")
-    addMutation.mutate({
+    addCategory.mutate({
       color,
       title,
     })
   }
 
   function onDeleteCategory(_id: number) {
-    deleteMutation.mutate(_id)
+    deleteCategory.mutate(_id)
   }
 
   function onClose() {
@@ -104,7 +89,7 @@ export function AddCategoryModal({ open, handleClose, categories }: IProps) {
           </Box>
           <Box>
             <List sx={{ marginTop: 3 }}>
-              {categories.map((category) => (
+              {categories?.map((category) => (
                 <ListItem
                   key={category.title}
                   secondaryAction={

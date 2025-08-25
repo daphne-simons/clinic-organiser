@@ -1,4 +1,4 @@
-import type { SetStateAction, MouseEvent, Dispatch } from "react"
+import type { SetStateAction, Dispatch } from "react"
 import {
   Dialog,
   DialogActions,
@@ -11,11 +11,11 @@ import {
 } from "@mui/material"
 import type { IAppointmentInfo } from "../../models"
 import type { View } from "../Layout"
+import { useDeleteAppointment } from "../../hooks/appointments"
 
 interface IProps {
   open: boolean
   handleClose: Dispatch<SetStateAction<void>>
-  onDeleteAppointment: (e: MouseEvent<HTMLButtonElement>) => void
   currentAppointment: IAppointmentInfo | null
   setView: Dispatch<SetStateAction<View>>
 }
@@ -23,16 +23,22 @@ interface IProps {
 function AppointmentInfoModal({
   open,
   handleClose,
-  onDeleteAppointment,
-  // currentAppointment,
+  currentAppointment,
   setView,
 }: IProps) {
   // TODO: Add an update functionality in this
-  function onClose() {
+
+  // --- QUERIES & MUTATIONS---
+  const deleteAppointment = useDeleteAppointment()
+
+  // --- HANDLER FUNCTIONS ---
+  function handleDelete(id: number) {
+    deleteAppointment.mutate(id)
     handleClose()
   }
+
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open}>
       <DialogTitle>Appointment Info</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -51,17 +57,20 @@ function AppointmentInfoModal({
               mainTab: "clients",
               subTab: "treatments",
               props: {
-                text: "hi Daph",
+                text: "hi Daph", //TODO: change to something useful, like the treatment id
               },
             }))
           }
         >
           Go to Appointment
         </Button>
-        <Button color="error" onClick={onClose}>
+        <Button color="error" onClick={() => handleClose()}>
           Cancel
         </Button>
-        <Button color="info" onClick={onDeleteAppointment}>
+        <Button
+          color="info"
+          onClick={() => handleDelete(currentAppointment?.id || -1)}
+        >
           Delete Appointment
         </Button>
       </DialogActions>

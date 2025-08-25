@@ -1,13 +1,13 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth0 } from '@auth0/auth0-react'
 
-import { getAppointments } from '../apis/appointments'
+import { addAppointment, getAppointments, deleteAppointment } from '../apis/appointments'
+import type { IAppointmentInfo } from '../models'
 
-function useSongs(userId: string) {
+export function useGetAppointments() {
   const { user, getAccessTokenSilently } = useAuth0()
-
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['songs'],
+    queryKey: ['appointments'],
     queryFn: async () => {
       const accessToken = await getAccessTokenSilently()
       if (user && user.sub) {
@@ -20,4 +20,32 @@ function useSongs(userId: string) {
   return { data, isLoading, isError }
 }
 
-export default useSongs
+export function useAddAppointment() {
+    const { getAccessTokenSilently } = useAuth0()
+
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (form: IAppointmentInfo) => {
+      const accessToken = await getAccessTokenSilently()
+      return addAppointment(form, accessToken)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] })
+    },
+  })
+}
+
+export function useDeleteAppointment() {
+    const { getAccessTokenSilently } = useAuth0()
+
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (id: number) => {
+      const accessToken = await getAccessTokenSilently()
+      return deleteAppointment(id, accessToken)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["appointments"] })
+    },
+  })
+}
