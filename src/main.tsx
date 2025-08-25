@@ -4,7 +4,7 @@ import { createRoot } from "react-dom/client";
 // import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Auth0Provider } from '@auth0/auth0-react';
 import App from "./App.tsx";
-import "./index.css";
+import "./styles/index.css";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
