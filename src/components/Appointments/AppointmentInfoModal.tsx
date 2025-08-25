@@ -30,11 +30,15 @@ function AppointmentInfoModal({
 
   // --- QUERIES & MUTATIONS---
   const deleteAppointment = useDeleteAppointment()
-  function onClose() {
+
+  // --- HANDLER FUNCTIONS ---
+  function handleDelete(id: number) {
+    deleteAppointment.mutate(id)
     handleClose()
   }
+
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open}>
       <DialogTitle>Appointment Info</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -53,17 +57,20 @@ function AppointmentInfoModal({
               mainTab: "clients",
               subTab: "treatments",
               props: {
-                text: "hi Daph", //TODO: change to something useful
+                text: "hi Daph", //TODO: change to something useful, like the treatment id
               },
             }))
           }
         >
           Go to Appointment
         </Button>
-        <Button color="error" onClick={onClose}>
+        <Button color="error" onClick={() => handleClose()}>
           Cancel
         </Button>
-        <Button color="info" onClick={() => deleteAppointment.mutate(currentAppointment?.id || -1)}>
+        <Button
+          color="info"
+          onClick={() => handleDelete(currentAppointment?.id || -1)}
+        >
           Delete Appointment
         </Button>
       </DialogActions>

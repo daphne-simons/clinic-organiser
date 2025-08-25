@@ -96,7 +96,7 @@ export interface IAppointmentInfo extends Event {
   startTime?: Date
   endTime?: Date
   notes?: string
-  categoryId?: number
+  appointmentType?: string
   customFields?: CustomFields
 }
 

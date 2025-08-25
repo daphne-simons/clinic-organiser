@@ -47,7 +47,7 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
     clientId: undefined,
     firstName: "", // Changed from undefined
     lastName: "", // Changed from undefined
-    categoryId: undefined,
+    appointmentType: "",
     startTime: getDefaultStartDate(), // Use default date instead of null
     endTime: getDefaultEndDate(), // Use default end date
     notes: "",
@@ -82,7 +82,7 @@ export default function AddAppointmentModal({ open, handleClose }: IProps) {
   ) {
     setAppointmentFormData((prevState) => ({
       ...prevState,
-      categoryId: value?._id,
+      appointmentType: value?.title,
     }))
   }
 

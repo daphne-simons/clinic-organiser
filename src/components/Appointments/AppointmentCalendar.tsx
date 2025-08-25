@@ -49,7 +49,7 @@ export function AppointmentCalendar({ setView }: Props) {
 
   const { data: categories } = useGetCategories()
   const { data: appointments } = useGetAppointments()
-
+  if (appointments) console.log('appointments', appointments)
   // --- HANDLER FUNCTIONS ---
   function handleSelectSlot(appointment: Event) {
     setOpenAppointmentModal(true)
@@ -63,11 +63,6 @@ export function AppointmentCalendar({ setView }: Props) {
 
   function handleDatePickerClose() {
     setOpenAppointmentModal(false)
-  }
-
-  function onDeleteAppointment() {
-    // TODO - replace with useMutation
-    setAppointmentInfoModal(false)
   }
 
   const onNavigate = useCallback((newDate: Date) => {
@@ -120,7 +115,6 @@ export function AppointmentCalendar({ setView }: Props) {
             <AppointmentInfoModal
               open={appointmentInfoModal}
               handleClose={() => setAppointmentInfoModal(false)}
-              onDeleteAppointment={onDeleteAppointment}
               currentAppointment={currentAppointment as IAppointmentInfo}
               setView={setView}
             />
@@ -143,7 +137,7 @@ export function AppointmentCalendar({ setView }: Props) {
               views={["week"]}
               eventPropGetter={(appointment) => {
                 const hasCategory = categories?.find(
-                  (category) => category._id === appointment.categoryId
+                  (category) => category.title === appointment.appointmentType
                 )
                 return {
                   style: {
