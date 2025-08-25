@@ -8,21 +8,21 @@ interface IProps {
 export default function MainTabsNav(props: IProps) {
   const { setView } = props
   return (
-    <nav>
-      <button
+    <nav className="">
+      <button className=""
         onClick={() => {
-          setView(() => ({mainTab: "appointments", subTab: null, props:{}}))
+          setView(() => ({ mainTab: "appointments", subTab: null, props: {} }))
         }}
       >
         Calendar
       </button>
       <button
-              onClick={() => {
-          setView(() => ({mainTab: "clients", subTab: null, props:{}}))
+        onClick={() => {
+          setView(() => ({ mainTab: "clients", subTab: null, props: {} }))
         }}>Clients</button>
       <button
-              onClick={() => {
-          setView(() => ({mainTab: "clinic", subTab: null, props:{}}))
+        onClick={() => {
+          setView(() => ({ mainTab: "clinic", subTab: null, props: {} }))
         }}>Clinic</button>
     </nav>
   )

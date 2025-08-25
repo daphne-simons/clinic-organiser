@@ -1,13 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #FF17CE;
-  --color-primary-lighter: #FF80E4;
-  --color-dark-purple: #1B0636;
-  --color-light-purple: #B07CF2;
-  --color-extra-light-purple: #E0C8FF;
-  --color-warning: #F27C7C;
-
+  --color-purple: '7566FF';
+  --color-mint-green: 'A2FFB0';
+  --color-lilac: 'DBD7FF';
+  --color-light-pink: 'FBF0FF';
+  --color-red: 'FF0000';
   --font-family-serif: "Roboto Slab", serif;
   --font-family-sans: Quicksand, sans-serif;
 }

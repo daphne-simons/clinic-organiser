@@ -44,7 +44,7 @@ export default function Layout() {
         {view.mainTab === "clinic" && <ClinicTab {...{ view, setView }} />}
       </IfAuthenticated>
       <IfNotAuthenticated>
-        <p className="text-light-purple">You are not logged in</p>
+        <p className="text-mint-green">You are not logged in</p>
       </IfNotAuthenticated>
       <Footer />
     </div>
