@@ -1,9 +1,9 @@
 ALTER SEQUENCE clients_id_seq RESTART WITH 1;
 
-INSERT INTO clients (first_name, last_name, dob, mobile, email) VALUES ('Ron', 'Zertnert', '1990-01-01', '123-456-7890', '1M9jg@example.com'),
-('Destroy', 'Orbison', '1991-02-02', '987-654-3210', 'ZP4bK@example.com'),
-('Gertrude', 'Diamond', '1992-03-03', '555-555-5555', 'qoIiJ@example.com'), 
-('Mary', 'Jane', '1993-04-04', '111-222-3333', '2VtF4@example.com');
+INSERT INTO clients (first_name, last_name, dob, mobile, email, custom_fields) VALUES ('Ron', 'Zertnert', '1990-01-01', '123-456-7890', '1M9jg@example.com', '{"occupation": "banker", "gender": "non-binary", "address": "123 Fake Street", "referred_by": "Jared"}'),
+('Destroy', 'Orbison', '1991-02-02', '987-654-3210', 'ZP4bK@example.com', '{ "address": "123 Downtown Avenue", "referred_by": "Daph"}'),
+('Gertrude', 'Diamond', '1992-03-03', '555-555-5555', 'qoIiJ@example.com', '{"occupation": "activist", "gender": "female", "referred_by": "Gaby"}'), 
+('Mary', 'Jane', '1993-04-04', '111-222-3333', '2VtF4@example.com', '{}');
 ALTER SEQUENCE clients_id_seq RESTART WITH 5;
 
 INSERT INTO medical_history (client_id) VALUES (1), (2),
@@ -39,12 +39,10 @@ INSERT INTO appointments (client_id, start_time, end_time, appointment_type, not
 ALTER SEQUENCE appointments_id_seq RESTART WITH 5;
 
 INSERT INTO forms (id, custom_fields) VALUES 
-('clients', '{}'),
+('clients', '{"occupation": "string", "gender": "string", "address": "string", "referred_by": "string"}'),
 ('medical_history', '{}'),
 ('tcm', '{}'),
 ('treatments', '{}');
-
--- TODO: add other tables for attachments and communications. 
 
 INSERT INTO categories (id, title, color) VALUES 
 (1, 'ACC', 'blue'),
